@@ -16,7 +16,7 @@ public class Ship {
 
     private float prepona;
 
-    private float currentRotation, destinedRotation, rotationSpeed = 80;
+    private float currentRotation, destinedRotation, rotationSpeed = 100;
     private float height,width;
     private int goToY,goToX;
 

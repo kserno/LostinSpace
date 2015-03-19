@@ -118,7 +118,7 @@ public class GameRenderer {
         batcher.end();
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.polygon(ship.getPole());
-        for (int i = 1; i <= myWorld.nAsteroids; i++) {
+        for (int i = 0; i <= myWorld.nAsteroids; i++) {
             renderer.polygon(myWorld.asteroids[i].getPole());
         }
         if (myWorld.geteIsActive()) {
@@ -177,7 +177,7 @@ public class GameRenderer {
         batcher.enableBlending();
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
 
-        for (int i = 1; i <= myWorld.nAsteroids; i++) {
+        for (int i = 0; i <= myWorld.nAsteroids; i++) {
             batcher.draw(textAsteroids[myWorld.asteroids[i].getType()], myWorld.asteroids[i].getX(), myWorld.asteroids[i].getY(), myWorld.asteroids[i].getRadius(), myWorld.asteroids[i].getRadius());
         }
 

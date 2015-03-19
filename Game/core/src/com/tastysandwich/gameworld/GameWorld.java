@@ -28,7 +28,7 @@ public class GameWorld {
 
     public float score;
 
-    public int nAsteroids = 0;
+    public int nAsteroids = -1;
     public Asteroid asteroids[];
     public float spawnAsteroid = 0;
 
@@ -91,15 +91,15 @@ public class GameWorld {
 
     private void updateRunning(float delta, float runTime) {
         ship.update(delta);
-        for (int i=1; i<=nAsteroids; i++){
+        for (int i=0; i<=nAsteroids; i++){
             asteroids[i].update(delta);
         }
         spawnAsteroid+= delta;
         if(gameSpeed<3){
             gameSpeed+=delta/64;
         }
-        if (spawnAsteroid >= 7 && nAsteroids<8){
-            asteroids[nAsteroids+1] = new Asteroid((float) (width*1.5), (float)r.nextInt((int) height), r.nextInt(200) - 450, r.nextInt(200)- 100, gameSpeed);
+        if (spawnAsteroid > 7 && nAsteroids<8){
+            asteroids[nAsteroids+1] = new Asteroid((float) (width*1.5), (float)r.nextInt((int) height), r.nextInt(100) - 450, r.nextInt(200)- 100, this);
             nAsteroids++;
             spawnAsteroid=0;
             Gdx.app.log("Asteroid", String.valueOf(nAsteroids));
@@ -124,7 +124,7 @@ public class GameWorld {
             energy =null;
             eIsActive = false;
         }
-        for (int i= 1; i<=nAsteroids; i++) {
+        for (int i= 0; i<=nAsteroids; i++) {
             if (asteroids[i].collides(ship)) {
                 Gdx.app.log("Ship","Collided!");
                 ship.collide();
@@ -143,13 +143,22 @@ public class GameWorld {
             }
         }
 
-        /*for (int i = 1; i <= nAsteroids-1; i++) {
-            for (int i2 = i +1; i2 <= nAsteroids; i++) {
+        for (int i = 0; i < nAsteroids-1; i++) {
+            for (int i2 = i + 1; i2 < nAsteroids; i2++) {
                 if (collidesA(asteroids[i].getBoundingPolygon(), asteroids[i2].getBoundingPolygon())) {
                     Gdx.app.log("Asteroid", "Collided");
+                    if(asteroids[i].getX()>asteroids[i2].getX()){
+                        float stolenSpeed = asteroids[i].velocity.x / 4;
+                        asteroids[i].velocity.x = stolenSpeed * 3;
+                        asteroids[i2].velocity.x += stolenSpeed;
+                    } else {
+                        float stolenSpeed = asteroids[i2].velocity.x / 4;
+                        asteroids[i2].velocity.x = stolenSpeed * 3;
+                        asteroids[i].velocity.x += stolenSpeed;
+                    }
                 }
             }
-        }*/
+        }
     }
 
     public void tryAgain(){
@@ -159,7 +168,7 @@ public class GameWorld {
         gameSpeed = 1;
         asteroids = null;
         asteroids = new Asteroid[9];
-        nAsteroids = 0;
+        nAsteroids = -1;
         spawnAsteroid = 0;
         score = 0;
         currentState = GameWorld.GameState.READY;

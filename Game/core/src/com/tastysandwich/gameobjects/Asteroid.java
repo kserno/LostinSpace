@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Circle;
+import com.tastysandwich.gameworld.GameWorld;
 
 import java.util.Random;
 
@@ -14,7 +15,7 @@ import java.util.Random;
 public class Asteroid {
 
     private Vector2 position;
-    private Vector2 velocity;
+    public Vector2 velocity;
     private int type;
 
     private float radius;
@@ -27,9 +28,12 @@ public class Asteroid {
 
     private Random r;
 
-    public Asteroid(float x, float y, int velocityx, int velocityy, float gameSpeed) {
+    private GameWorld world;
+
+    public Asteroid(float x, float y, int velocityx, int velocityy, GameWorld world) {
+        this.world = world;
         position = new Vector2(x,y);
-        velocity = new Vector2(velocityx * gameSpeed, velocityy);
+        velocity = new Vector2(velocityx * world.gameSpeed, velocityy);
         Random random = new Random();
         type = random.nextInt(5) + 1;
         radius = Gdx.graphics.getWidth()/ (random.nextInt(2)+8);
@@ -62,7 +66,7 @@ public class Asteroid {
         position.x = (float) (Gdx.graphics.getWidth()*1.5);
         position.y = (float)r.nextInt(Gdx.graphics.getHeight());
         type = r.nextInt(5) + 1;
-        velocity.x = r.nextInt(200) - 450;
+        velocity.x = r.nextInt(100) - 450 * world.gameSpeed;
         velocity.y = r.nextInt(200)- 100;
         switch (type){
             case 1: aVertices = new float[]{-radius / 8 * 3, -radius / 4, -radius / 8, -radius / 8 * 3,  radius / 8, -radius / 8 * 3, radius / 8 * 3, -radius / 4, radius / 16 * 7, 0,
