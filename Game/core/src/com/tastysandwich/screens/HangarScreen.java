@@ -108,6 +108,7 @@ public class HangarScreen implements Screen {
         ship.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 AssetLoader.setSelectedShip(nship);
+                AssetLoader.loadShip(nship);
                 return true;
             }
         });

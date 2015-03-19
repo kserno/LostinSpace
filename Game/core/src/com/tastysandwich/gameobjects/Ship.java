@@ -16,7 +16,7 @@ public class Ship {
 
     private float prepona;
 
-    private float rotation;
+    private float currentRotation, destinedRotation, rotationSpeed = 80;
     private float height,width;
     private int goToY,goToX;
 
@@ -64,16 +64,22 @@ public class Ship {
         if (originY > goToY-5 && originY < goToY+5){
             velocity.y = 0;
         }else if(originY > goToY){
-            velocity.y = (-140+rotation*2)*world.gameSpeed;
+            velocity.y = (-140+currentRotation*2)*world.gameSpeed;
         }else if (originY < goToY){
-            velocity.y = (140+rotation*2)*world.gameSpeed;
+            velocity.y = (140+currentRotation*2)*world.gameSpeed;
         }
         prepona = (float) Math.sqrt((goToX - originX)*(goToX - originX) + ((originY - goToY)*(originY - goToY)));
-        rotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona)) * -1;
+        destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona)) * -1;
         position.add(velocity.cpy().scl(delta));
 
+        if (destinedRotation>currentRotation+2){
+            currentRotation+=rotationSpeed*delta*world.gameSpeed;
+        }else if (destinedRotation<currentRotation-2){
+            currentRotation-=rotationSpeed*delta*world.gameSpeed;
+        }
+
         boundingPolygon.setPosition(originX, originY+height/30);
-        boundingPolygon.setRotation(rotation);
+        boundingPolygon.setRotation(currentRotation);
     }
     public void onClick(int screenX, int screenY){
         goToY = screenY;
@@ -104,7 +110,7 @@ public class Ship {
         }
 
     public float getRotation() {
-        return rotation;
+        return currentRotation;
     }
 
     public void addEnergy() {

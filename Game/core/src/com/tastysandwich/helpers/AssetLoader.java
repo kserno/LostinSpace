@@ -154,7 +154,7 @@ public class AssetLoader {
     }
 
     private static void loadGameAssets(int width, int height) {
-        loadShip();
+        loadShip(getSelectedShip());
         loadGameBackground(width, height);
         loadAsteroids();
         loadEnergy();
@@ -243,20 +243,18 @@ public class AssetLoader {
         stars2.setY(0);
     }
 
-    private static void loadShip() {
+    public static void loadShip(int nShip) {
         // SHIP
-        Random r = new Random();
-        int s = r.nextInt(2)+2;
-        Texture bg = new Texture(Gdx.files.internal("data/ships/"+ s +".png"));
+        Texture bg = new Texture(Gdx.files.internal("data/ships/"+ (nShip+1) +".png"));
         bg.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
-        ship1 = new TextureRegion(bg, 2, 0, 302, 204);
+        ship1 = new TextureRegion(bg, 0, 2, 450, 300);
         ship1.flip(false, true);
 
-        ship2 = new TextureRegion(bg, 304, 0, 302, 204);
+        ship2 = new TextureRegion(bg, 0, 304, 450, 300);
         ship2.flip(false, true);
 
-        ship3 = new TextureRegion(bg, 606, 0, 302, 204);
+        ship3 = new TextureRegion(bg, 0, 606, 450, 300);
         ship3.flip(false, true);
 
         TextureRegion[] ship = { ship1, ship2, ship3 };
