@@ -143,19 +143,24 @@ public class GameWorld {
             }
         }
 
-        for (int i = 0; i < nAsteroids-1; i++) {
+        for (int i = 0; i < nAsteroids; i++) {
             for (int i2 = i + 1; i2 < nAsteroids; i2++) {
                 if (collidesA(asteroids[i].getBoundingPolygon(), asteroids[i2].getBoundingPolygon())) {
                     Gdx.app.log("Asteroid", "Collided");
                     if(asteroids[i].getX()>asteroids[i2].getX()){
-                        float stolenSpeed = asteroids[i].velocity.x / 4;
-                        asteroids[i].velocity.x = stolenSpeed * 3;
+                        float stolenSpeed = asteroids[i].velocity.x / 16;
+                        asteroids[i].velocity.x = stolenSpeed * 15;
                         asteroids[i2].velocity.x += stolenSpeed;
                     } else {
-                        float stolenSpeed = asteroids[i2].velocity.x / 4;
-                        asteroids[i2].velocity.x = stolenSpeed * 3;
+                        float stolenSpeed = asteroids[i2].velocity.x / 16;
+                        asteroids[i2].velocity.x = stolenSpeed * 15;
                         asteroids[i].velocity.x += stolenSpeed;
                     }
+                    float ySpeed = asteroids[i].velocity.y;
+                    asteroids[i].velocity.y = asteroids[i2].velocity.y;
+                    asteroids[i2].velocity.y = ySpeed;
+
+
                 }
             }
         }

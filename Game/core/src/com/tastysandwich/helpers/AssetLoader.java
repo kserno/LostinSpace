@@ -79,9 +79,9 @@ public class AssetLoader {
         }
 
         // FONT
-        font = new BitmapFont(Gdx.files.internal("data/font/text.fnt"));
+        font = new BitmapFont(Gdx.files.internal("data/font/font.fnt"));
         font.setColor(Color.WHITE);
-        font.setScale(1f,-1f);
+        font.setScale(1.1f,-1.1f);
 
         loadButtons(width, height);
         loadGameAssets(width, height);
@@ -108,16 +108,16 @@ public class AssetLoader {
 
     private static void loadButtons(int width, int height) {
         // BUTTON PLAY
-        Texture texture = new Texture("data/play.png");
+        Texture texture = new Texture("data/skins/play.png");
         Sprite sprite = new Sprite(texture);
-        sprite.setSize(width / 5, height / 20 * 3);
+        sprite.setSize(width / 4, height / 20 * 3);
         sprite.flip(false, true);
         sdPlay = new SpriteDrawable(sprite);
 
         // BUTTON HANGAR
         texture = new Texture("data/skins/hangar.png");
         sprite = new Sprite(texture);
-        sprite.setSize(width / 5, height / 20 * 3);
+        sprite.setSize(width / 4, height / 20 * 3);
         sprite.flip(false,true);
         sdHangar = new SpriteDrawable(sprite);
 
@@ -138,7 +138,7 @@ public class AssetLoader {
         //BUTTON SOUNDS TRUE
         texture = new Texture("data/soundsT.png");
         sprite = new Sprite(texture);
-        sprite.setSize(width/12, width/12);
+        sprite.setSize(width/14, width/14);
         sprite.flip(false,true);
         sdSoundsT = new SpriteDrawable(sprite);
 

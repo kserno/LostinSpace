@@ -2,6 +2,7 @@ package com.tastysandwich.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -61,7 +62,7 @@ public class Menu implements Screen {
         imgbSoundsF = AssetLoader.sdSoundsF;
 
         Play = new ImageButton(imgbPlay); //** Button text and style **//
-        Play.setPosition(width / 2 - width / 5 / 2, height / 6); //** Button location **//
+        Play.setPosition(width / 2 - width / 4 / 2, height / 6); //** Button location **//
         Play.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 game.setScreen(new GameScreen(width, height));//** Usually used to start Game, etc. **//
@@ -69,7 +70,7 @@ public class Menu implements Screen {
             }});
 
         Hangar = new ImageButton(imgbHangar);
-        Hangar.setPosition(width / 2 - width / 5 / 2,height / 3);
+        Hangar.setPosition(width / 2 - width / 4 / 2,height / 12 * 5);
         Hangar.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 game.setScreen(new HangarScreen(width,height, game));
@@ -78,7 +79,7 @@ public class Menu implements Screen {
         });
 
         Sounds = new ImageButton(new ImageButton.ImageButtonStyle(imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT)); //** Button text and style **//
-        Sounds.setPosition(width - width / 12, 0); //** Button location **//
+        Sounds.setPosition(width - width / 11, width / 11 - width / 14); //** Button location **//
         Sounds.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(playSounds) {
@@ -114,7 +115,7 @@ public class Menu implements Screen {
         Play.draw(batcher, 50f);
         Hangar.draw(batcher, 50f);
         Sounds.draw(batcher, 50f);
-        AssetLoader.font.draw(batcher,String.valueOf(AssetLoader.getHighScore()), width/2 -  String.valueOf(AssetLoader.getHighScore()).length() -1* width/30, height/20 * 16);
+        AssetLoader.font.draw(batcher,String.valueOf(AssetLoader.getHighScore()), width/2 - (20 * String.valueOf(AssetLoader.getHighScore()).length()), height/20 * 15);
         batcher.end();
 
     }
