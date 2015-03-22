@@ -30,7 +30,8 @@ public class GameWorld {
 
     public int nAsteroids = -1;
     public Asteroid asteroids[];
-    public float spawnAsteroid = 0;
+    private float spawnAsteroid = 0;
+    private float restartAsteroid = 0;
 
     public GameState currentState;
 
@@ -94,6 +95,17 @@ public class GameWorld {
         for (int i=0; i<=nAsteroids; i++){
             asteroids[i].update(delta);
         }
+        restartAsteroid+=delta;
+        if(restartAsteroid > 0.5){
+            for (int i=0; i<=nAsteroids; i++){
+                if(asteroids[i].readyToRestart){
+                    asteroids[i].restart();
+                    asteroids[i].readyToRestart = false;
+                    restartAsteroid = 0;
+                    break;
+                }
+            }
+        }
         spawnAsteroid+= delta;
         if(gameSpeed<3){
             gameSpeed+=delta/64;
@@ -143,8 +155,8 @@ public class GameWorld {
             }
         }
 
-        for (int i = 0; i < nAsteroids; i++) {
-            for (int i2 = i + 1; i2 < nAsteroids; i2++) {
+        for (int i = 0; i <= nAsteroids -1; i++) {
+            for (int i2 = i + 1; i2 <= nAsteroids; i2++) {
                 if (collidesA(asteroids[i].getBoundingPolygon(), asteroids[i2].getBoundingPolygon())) {
                     Gdx.app.log("Asteroid", "Collided");
                     if(asteroids[i].getX()>asteroids[i2].getX()){

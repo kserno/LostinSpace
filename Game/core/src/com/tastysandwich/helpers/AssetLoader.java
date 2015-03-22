@@ -81,7 +81,7 @@ public class AssetLoader {
         // FONT
         font = new BitmapFont(Gdx.files.internal("data/font/font.fnt"));
         font.setColor(Color.WHITE);
-        font.setScale(1.1f,-1.1f);
+        font.setScale( .9f,-.9f);
 
         loadButtons(width, height);
         loadGameAssets(width, height);

@@ -16,6 +16,8 @@ public class Asteroid {
 
     private Vector2 position;
     public Vector2 velocity;
+    private float rotation;
+    private float rotationSpeed;
     private int type;
 
     private float radius;
@@ -30,13 +32,17 @@ public class Asteroid {
 
     private GameWorld world;
 
+    public boolean readyToRestart = false;
+
     public Asteroid(float x, float y, int velocityx, int velocityy, GameWorld world) {
+        r = new Random();
         this.world = world;
+        rotationSpeed = r.nextInt(100)-50;
+        rotation = 0;
         position = new Vector2(x,y);
-        velocity = new Vector2(velocityx * world.gameSpeed, velocityy);
-        Random random = new Random();
-        type = random.nextInt(5) + 1;
-        radius = Gdx.graphics.getWidth()/ (random.nextInt(2)+8);
+        velocity = new Vector2(velocityx * world.gameSpeed - Math.abs(rotationSpeed), velocityy);
+        type = r.nextInt(5) + 1;
+        radius = Gdx.graphics.getWidth()/ (r.nextInt(2)+8);
         switch (type){
             case 1: aVertices = new float[]{-radius / 8 * 3, -radius / 4, -radius / 8, -radius / 8 * 3,  radius / 8, -radius / 8 * 3, radius / 8 * 3, -radius / 4, radius / 16 * 7, 0,
                     radius / 16 * 5, radius / 4, 0, radius / 16 * 7, -radius / 8 * 3, radius / 4, -radius / 16 * 7, 0} ;
@@ -62,11 +68,12 @@ public class Asteroid {
         boundingPolygon.setPosition(position.x+radius/2, position.y+radius/2);
     }
     public void restart(){
-        r = new Random();
         position.x = (float) (Gdx.graphics.getWidth()*1.5);
         position.y = (float)r.nextInt(Gdx.graphics.getHeight());
         type = r.nextInt(5) + 1;
-        velocity.x = r.nextInt(100) - 450 * world.gameSpeed;
+        rotationSpeed = r.nextInt(100)-50;
+        rotation = 0;
+        velocity.x = r.nextInt(100) - 450 * world.gameSpeed  - Math.abs(rotationSpeed);
         velocity.y = r.nextInt(200)- 100;
         switch (type){
             case 1: aVertices = new float[]{-radius / 8 * 3, -radius / 4, -radius / 8, -radius / 8 * 3,  radius / 8, -radius / 8 * 3, radius / 8 * 3, -radius / 4, radius / 16 * 7, 0,
@@ -96,9 +103,14 @@ public class Asteroid {
 
         position.add(velocity.cpy().scl(delta));
         if (position.x+radius <= 0){
-            restart();
+            readyToRestart = true;
+        }
+        rotation += rotationSpeed * delta;
+        if(rotation > 359 || rotation < -359){
+            rotation = 0;
         }
         boundingPolygon.setPosition(position.x+radius/2, position.y+radius/2);
+        boundingPolygon.setRotation(rotation);
     }
     public float getX() {
         return position.x;
@@ -111,6 +123,8 @@ public class Asteroid {
     public float getRadius() {
         return radius;
     }
+
+    public float getRotation() { return rotation; }
 
     public int getType(){
         return type;
