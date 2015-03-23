@@ -20,7 +20,7 @@ import java.util.Random;
  */
 public class GameWorld {
     private Ship ship;
-    private float width, height;
+    public float width, height;
     private Random r;
     public Energy energy;
 
@@ -35,7 +35,7 @@ public class GameWorld {
 
     public GameState currentState;
 
-    public float gameSpeed = 1;
+    private float gameSpeed = 1;
 
     private ImageButton ibTryAgain;
     private Rectangle tryAgainRect;
@@ -48,33 +48,39 @@ public class GameWorld {
 
     public enum GameState {
 
-        READY ,RUNNING, GAMEOVER, HISCORE, PAUSE
+        READY, RUNNING, GAMEOVER, HISCORE, PAUSE
     }
 
 
     public GameWorld(float width, float height) {
         currentState = GameState.READY;
         Gdx.app.log("GameState", "READY");
+        Gdx.app.log("width", String.valueOf(Gdx.graphics.getWidth()));
+        Gdx.app.log("height", String.valueOf(Gdx.graphics.getHeight()));
         asteroids = new Asteroid[9];
         this.width = width;
         this.height = height;
-        ship = new Ship(width/12, height/3, width/6, width/6/3*2, this);
+        ship = new Ship(width / 12, height / 3, width / 6, width / 6 / 3 * 2, this);
         r = new Random();
         ibTryAgain = new ImageButton(AssetLoader.sdTryAgain);
-        ibTryAgain.setPosition(width / 2 - width / 5 / 2, height/2);
-        tryAgainRect = new Rectangle(width / 2 - width / 5 / 2, height/2, width / 5, height / 20 * 3);
+        ibTryAgain.setPosition(width / 2 - width / 5 / 2, height / 2);
+        tryAgainRect = new Rectangle(width / 2 - width / 5 / 2, height / 2, width / 5, height / 20 * 3);
     }
 
     public void update(float delta, float runTime) {
 
         switch (currentState) {
-            case READY: updateReady(delta);
-            break;
-            case RUNNING: updateRunning(delta, runTime);
-            break;
-            case GAMEOVER: updateGameOver(delta);
-            case HISCORE: updateHiScore();
-            break;
+            case READY:
+                updateReady(delta);
+                break;
+            case RUNNING:
+                updateRunning(delta, runTime);
+                break;
+            case GAMEOVER:
+                updateGameOver(delta);
+            case HISCORE:
+                updateHiScore();
+                break;
         }
 
     }
@@ -92,13 +98,13 @@ public class GameWorld {
 
     private void updateRunning(float delta, float runTime) {
         ship.update(delta);
-        for (int i=0; i<=nAsteroids; i++){
+        for (int i = 0; i <= nAsteroids; i++) {
             asteroids[i].update(delta);
         }
-        restartAsteroid+=delta;
-        if(restartAsteroid > 0.5){
-            for (int i=0; i<=nAsteroids; i++){
-                if(asteroids[i].readyToRestart){
+        restartAsteroid += delta;
+        if (restartAsteroid > 0.5) {
+            for (int i = 0; i <= nAsteroids; i++) {
+                if (asteroids[i].readyToRestart) {
                     asteroids[i].restart();
                     asteroids[i].readyToRestart = false;
                     restartAsteroid = 0;
@@ -106,39 +112,39 @@ public class GameWorld {
                 }
             }
         }
-        spawnAsteroid+= delta;
-        if(gameSpeed<3){
-            gameSpeed+=delta/64;
+        spawnAsteroid += delta;
+        if (gameSpeed < 3) {
+            gameSpeed += delta / 64;
         }
-        if (spawnAsteroid > 7 && nAsteroids<8){
-            asteroids[nAsteroids+1] = new Asteroid((float) (width*1.5), (float)r.nextInt((int) height), r.nextInt(100) - 450, r.nextInt(200)- 100, this);
+        if (spawnAsteroid > 7 && nAsteroids < 8) {
+            asteroids[nAsteroids + 1] = new Asteroid(width, (float) r.nextInt((int) height), r.nextInt(200) - 100, this);
             nAsteroids++;
-            spawnAsteroid=0;
+            spawnAsteroid = 0;
             Gdx.app.log("Asteroid", String.valueOf(nAsteroids));
         }
-        if(ship.getIsAlive()) {
-            score += delta*gameSpeed;
+        if (ship.getIsAlive()) {
+            score += delta * gameSpeed;
         }
-        if ((int)(runTime) % 10 == 0 && !eIsActive) {
-            energy = new Energy(width, (float)r.nextInt((int)height), 60.00f);
+        if ((int) (runTime) % 10 == 0 && !eIsActive) {
+            energy = new Energy(width, (float) r.nextInt((int) height), 60.00f);
             eIsActive = true;
 
         }
         if (eIsActive) {
             energy.update(delta);
-            if(energy.getX()+energy.radius<=0){
+            if (energy.getX() + energy.radius <= 0) {
                 energy = null;
                 eIsActive = false;
             }
         }
         if (eIsActive && energy.collides(ship)) {
             ship.addEnergy();
-            energy =null;
+            energy = null;
             eIsActive = false;
         }
-        for (int i= 0; i<=nAsteroids; i++) {
+        for (int i = 0; i <= nAsteroids; i++) {
             if (asteroids[i].collides(ship)) {
-                Gdx.app.log("Ship","Collided!");
+                Gdx.app.log("Ship", "Collided!");
                 ship.collide();
                 asteroids[i].restart();
             }
@@ -147,7 +153,7 @@ public class GameWorld {
 
             if (AssetLoader.getHighScore() < score) {
                 currentState = GameState.HISCORE;
-                AssetLoader.setHighScore((int)score);
+                AssetLoader.setHighScore((int) score);
                 Gdx.app.log("GameState ", "HISCORE");
             } else {
                 currentState = GameState.GAMEOVER;
@@ -155,11 +161,11 @@ public class GameWorld {
             }
         }
 
-        for (int i = 0; i <= nAsteroids -1; i++) {
+        for (int i = 0; i <= nAsteroids - 1; i++) {
             for (int i2 = i + 1; i2 <= nAsteroids; i2++) {
                 if (collidesA(asteroids[i].getBoundingPolygon(), asteroids[i2].getBoundingPolygon())) {
                     Gdx.app.log("Asteroid", "Collided");
-                    if(asteroids[i].getX()>asteroids[i2].getX()){
+                    if (asteroids[i].getX() > asteroids[i2].getX()) {
                         float stolenSpeed = asteroids[i].velocity.x / 16;
                         asteroids[i].velocity.x = stolenSpeed * 15;
                         asteroids[i2].velocity.x += stolenSpeed;
@@ -178,7 +184,7 @@ public class GameWorld {
         }
     }
 
-    public void tryAgain(){
+    public void tryAgain() {
         ship.restart();
         energy = null;
         eIsActive = false;
@@ -207,16 +213,20 @@ public class GameWorld {
         return asteroids;
     }
 
-    public ImageButton getIbTryAgain() { return ibTryAgain; }
+    public ImageButton getIbTryAgain() {
+        return ibTryAgain;
+    }
 
-    public Rectangle getTryAgainRect() { return tryAgainRect; }
+    public Rectangle getTryAgainRect() {
+        return tryAgainRect;
+    }
 
     public Energy getEnergy() {
         return energy;
     }
 
     public int getScore() {
-        return (int)score;
+        return (int) score;
 
     }
 
@@ -227,5 +237,9 @@ public class GameWorld {
 
     public GameState getCurrentState() {
         return currentState;
+    }
+
+    public float getGameSpeed() {
+        return gameSpeed;
     }
 }

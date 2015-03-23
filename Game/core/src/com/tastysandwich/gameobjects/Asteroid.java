@@ -32,15 +32,17 @@ public class Asteroid {
 
     private GameWorld world;
 
+    private static int velocityx = -100;
+
     public boolean readyToRestart = false;
 
-    public Asteroid(float x, float y, int velocityx, int velocityy, GameWorld world) {
+    public Asteroid(float x, float y, int velocityy, GameWorld world) {
         r = new Random();
         this.world = world;
         rotationSpeed = r.nextInt(100)-50;
         rotation = 0;
         position = new Vector2(x,y);
-        velocity = new Vector2(velocityx * world.gameSpeed - Math.abs(rotationSpeed), velocityy);
+        velocity = new Vector2(velocityx * world.getGameSpeed(), velocityy);
         type = r.nextInt(5) + 1;
         radius = Gdx.graphics.getWidth()/ (r.nextInt(2)+8);
         switch (type){
@@ -73,7 +75,7 @@ public class Asteroid {
         type = r.nextInt(5) + 1;
         rotationSpeed = r.nextInt(100)-50;
         rotation = 0;
-        velocity.x = r.nextInt(100) - 450 * world.gameSpeed  - Math.abs(rotationSpeed);
+        velocity.x = velocityx * world.getGameSpeed();
         velocity.y = r.nextInt(200)- 100;
         switch (type){
             case 1: aVertices = new float[]{-radius / 8 * 3, -radius / 4, -radius / 8, -radius / 8 * 3,  radius / 8, -radius / 8 * 3, radius / 8 * 3, -radius / 4, radius / 16 * 7, 0,

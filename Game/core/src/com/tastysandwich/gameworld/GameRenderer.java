@@ -148,9 +148,9 @@ public class GameRenderer {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        offset -=  (width * Gdx.graphics.getDeltaTime()/(8/myWorld.gameSpeed));
-        offset2 -=  (width * Gdx.graphics.getDeltaTime()/(4/myWorld.gameSpeed));
-        offset3 -=  (width * Gdx.graphics.getDeltaTime()/(6/myWorld.gameSpeed));
+        offset -=  (width * Gdx.graphics.getDeltaTime()/(8/myWorld.getGameSpeed()));
+        offset2 -=  (width * Gdx.graphics.getDeltaTime()/(4/myWorld.getGameSpeed()));
+        offset3 -=  (width * Gdx.graphics.getDeltaTime()/(6/myWorld.getGameSpeed()));
         offset = offset % width;
         offset2 = offset2 % width;
         offset3 = offset3 % width;
