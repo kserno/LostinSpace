@@ -44,7 +44,7 @@ public class GameRenderer {
     private Energy energy;
     private Texture textAsteroids[];
     private TextureRegion scoreTable, highscoreTable;
-    private Texture[] energyBar;
+    private Sprite[] energyBar;
 
     private ShapeRenderer renderer;
 
@@ -117,7 +117,7 @@ public class GameRenderer {
         }
         batcher.end();
         renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.polygon(ship.getPole());
+        //renderer.polygon(ship.getPole());
         for (int i = 0; i <= myWorld.nAsteroids; i++) {
             renderer.polygon(myWorld.asteroids[i].getPole());
         }

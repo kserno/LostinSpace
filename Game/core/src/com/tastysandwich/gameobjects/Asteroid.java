@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Circle;
 import com.tastysandwich.gameworld.GameWorld;
 
 import java.util.Random;
@@ -26,13 +25,11 @@ public class Asteroid {
 
     private Polygon boundingPolygon;
 
-    private float originX,originY;
-
     private Random r;
 
     private GameWorld world;
 
-    private static int velocityx = -100;
+    private static int velocityx = -300;
 
     public boolean readyToRestart = false;
 

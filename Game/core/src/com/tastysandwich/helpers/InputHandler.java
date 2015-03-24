@@ -1,8 +1,6 @@
 package com.tastysandwich.helpers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Rectangle;
 import com.tastysandwich.gameobjects.Ship;
 import com.tastysandwich.gameworld.GameWorld;
 

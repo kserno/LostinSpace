@@ -2,24 +2,12 @@ package com.tastysandwich.helpers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.tastysandwich.screens.LoadingScreen;
-
-import java.lang.reflect.Array;
-import java.util.Map;
-import java.util.Random;
-
 /**
  * Created by solit_000 on 6.2.2015.
  */
@@ -49,7 +37,7 @@ public class AssetLoader {
 
     private static int LoadingPercent;
 
-    public static Texture[] energyBar;
+    public static Sprite[] energyBar;
 
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
     public static Sprite sMenuBackground;
@@ -80,7 +68,7 @@ public class AssetLoader {
 
         // FONT
         font = new BitmapFont(Gdx.files.internal("data/font/font.fnt"));
-        font.setColor(Color.WHITE);
+        font.setColor(255.0f, 255.0f, 255.0f, 1.0f);
         font.setScale( .9f,-.9f);
 
         loadButtons(width, height);
@@ -158,7 +146,7 @@ public class AssetLoader {
         loadGameBackground(width, height);
         loadAsteroids();
         loadEnergy();
-        loadEnergyBar();
+        loadEnergyBar(width, height);
         loadGOTables();
         loadHangarShips();
     }
@@ -177,10 +165,12 @@ public class AssetLoader {
 
     }
 
-    private static void loadEnergyBar() {
-        energyBar = new Texture[11];
+    private static void loadEnergyBar(int width, int height) {
+        energyBar = new Sprite[11];
         for (int i=0; i<=10; i++){
-            energyBar[i] = new Texture(Gdx.files.internal("data/energybar/" + i + ".png"));
+            Texture bar = new Texture(Gdx.files.internal("data/energybar/" + i + ".png"));
+            energyBar[i] = new Sprite(bar);
+            energyBar[i].setSize(width / 4, height / 16);
         }
     }
 
@@ -258,7 +248,7 @@ public class AssetLoader {
         ship3.flip(false, true);
 
         TextureRegion[] ship = { ship1, ship2, ship3 };
-        shipAnimation = new Animation(0.06f, ship);
+        shipAnimation = new Animation(0.14f, ship);
         shipAnimation.setPlayMode(Animation.PlayMode.LOOP);
     }
 

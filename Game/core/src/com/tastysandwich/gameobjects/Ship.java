@@ -34,6 +34,8 @@ public class Ship {
 
     private float sx,sy;
 
+    private boolean rotate;
+
     private GameWorld world;
 
     public Ship(float x, float y, float width, float height, GameWorld world){
@@ -65,36 +67,26 @@ public class Ship {
 
         position.add(velocity.cpy().scl(delta));
 
-        /*if (originY > goToY-5 && originY < goToY+5){
+        if (originY > goToY-5 && originY < goToY+5){
             velocity.y = 0;
         }else if(originY > goToY){
             velocity.y = (-140+currentRotation*2)*world.getGameSpeed();
         }else if (originY < goToY){
             velocity.y = (140+currentRotation*2)*world.getGameSpeed();
-        }*/
+        }
 
-        if (originY > goToY-10 && originY < goToY+10){
+        /*if (originY > goToY-10 && originY < goToY+10){
             velocity.y = 0;
         }else if(originY > goToY){
             velocity.y = -140*world.getGameSpeed();
         }else if (originY < goToY){
             velocity.y = 140*world.getGameSpeed();
-        }
+        }*/
 
         prepona = (float) Math.sqrt(((goToX - originX)*(goToX - originX)) + ((originY - goToY)*(originY - goToY)));
         destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona))*-1;
+        rotationChange(delta);
 
-        difRotation = currentRotation - destinedRotation;
-        if (difRotation < 0) difRotation = -difRotation;
-        rotationSpeed = difRotation/ (0.2f/delta);
-        Gdx.app.log("rotationSpeed", String.valueOf(rotationSpeed));
-        Gdx.app.log("difRotation", String.valueOf(difRotation));
-
-        if (destinedRotation > currentRotation) {
-           currentRotation += rotationSpeed;
-        } else {
-           currentRotation -= rotationSpeed;
-        }
 
 
         /*if (destinedRotation>currentRotation+2){
@@ -103,12 +95,32 @@ public class Ship {
             currentRotation-=rotationSpeed*delta*world.getGameSpeed();
         }*/
 
-        Gdx.app.log("destined rotation",String.valueOf(destinedRotation));
-        Gdx.app.log("current rotation", String.valueOf(currentRotation));
-
         boundingPolygon.setPosition(originX, originY);
         boundingPolygon.setRotation(currentRotation);
     }
+
+    private void rotationChange(float delta) {
+        if (!rotate && (Math.abs(currentRotation - destinedRotation)) > 3) {
+            difRotation = currentRotation - destinedRotation;
+            if (difRotation < 0) difRotation = -difRotation;
+            rotationSpeed = difRotation / (0.4f / delta);
+            rotate = true;
+        } else {
+            if (destinedRotation+2 > currentRotation) {
+                currentRotation += rotationSpeed;
+            } else if (destinedRotation-2 < currentRotation) {
+                currentRotation -= rotationSpeed;
+        }
+        if((Math.abs(currentRotation - destinedRotation)) < 3) {
+            rotationSpeed =0;
+            rotate = false;
+        }
+
+        }
+        Gdx.app.log("rotate ", String.valueOf(rotate));
+
+    }
+
     public void onClick(int screenX, int screenY){
         goToY = screenY;
         if(screenX<(width*6)/3){
@@ -117,10 +129,12 @@ public class Ship {
             goToX = screenX;
         }
     }
-    public void onRelease(){
+    public void onRelease() {
+        if (velocity.y == 0) return;
+        goToY = (velocity.y > 0) ? (int) (position.y + height) : (int) (position.y) ;
         goToX = (int) world.width;
-        goToY = (int) originY;
     }
+
     public float getX() {
         return position.x;
     }

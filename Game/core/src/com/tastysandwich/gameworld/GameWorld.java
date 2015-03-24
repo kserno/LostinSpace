@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.tastysandwich.gameobjects.Asteroid;
 import com.tastysandwich.gameobjects.Ship;
@@ -55,8 +53,6 @@ public class GameWorld {
     public GameWorld(float width, float height) {
         currentState = GameState.READY;
         Gdx.app.log("GameState", "READY");
-        Gdx.app.log("width", String.valueOf(Gdx.graphics.getWidth()));
-        Gdx.app.log("height", String.valueOf(Gdx.graphics.getHeight()));
         asteroids = new Asteroid[9];
         this.width = width;
         this.height = height;
@@ -126,7 +122,7 @@ public class GameWorld {
             score += delta * gameSpeed;
         }
         if ((int) (runTime) % 10 == 0 && !eIsActive) {
-            energy = new Energy(width, (float) r.nextInt((int) height), 60.00f);
+            energy = new Energy(width, (float) r.nextInt((int) height), width/21.33f);
             eIsActive = true;
 
         }
