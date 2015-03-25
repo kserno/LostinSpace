@@ -77,8 +77,15 @@ public class GameWorld {
             case HISCORE:
                 updateHiScore();
                 break;
+            case PAUSE:
+                updatePause();
+                break;
         }
 
+    }
+
+    private void updatePause() {
+        // do nothing
     }
 
     private void updateHiScore() {
@@ -135,6 +142,8 @@ public class GameWorld {
         }
         if (eIsActive && energy.collides(ship)) {
             ship.addEnergy();
+            AssetLoader.setTotalEnergy(AssetLoader.getTotalEnergy() + 1);
+            Gdx.app.log("totale", String.valueOf(AssetLoader.getTotalEnergy()));
             energy = null;
             eIsActive = false;
         }

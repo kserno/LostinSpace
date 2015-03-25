@@ -64,6 +64,9 @@ public class AssetLoader {
         if (!prefs.contains("nShip")) {
             prefs.putInteger("nShip", 0);
         }
+        if (!prefs.contains("TotalEnergy")) {
+            prefs.putInteger("TotalEnergy", 0);
+        }
 
         // FONT
         font = new BitmapFont(Gdx.files.internal("data/font/font.fnt"));
@@ -153,9 +156,16 @@ public class AssetLoader {
     private static void loadHangarShips() {
         hangarShips = new SpriteDrawable[3];
         for(int i=0; i<3; i++) {
-            hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/" + (i+ 1) + ".png")));
-            hangarShip.setSize(200f, 150f);
-            hangarShip.flip(false, true);
+            if (i ==2 && getTotalEnergy() < 500) {
+                hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/lockedship2.png")));
+                hangarShip.setSize(200f, 130f);
+                hangarShip.flip(false, true);
+            } else {
+                hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/" + (i+ 1) + ".png")));
+                hangarShip.setSize(200f, 130f);
+                hangarShip.flip(false, true);
+            }
+
             hangarShips[i] = new SpriteDrawable(hangarShip);
 
         }
@@ -267,6 +277,14 @@ public class AssetLoader {
         return prefs.getInteger("nShip");
     }
 
+    public static void setTotalEnergy(int val) {
+        prefs.putInteger("TotalEnergy", val);
+        prefs.flush();
+    }
+
+    public static int getTotalEnergy() {
+        return prefs.getInteger("TotalEnergy");
+    }
 
     public static void dispose() {
         font.dispose();

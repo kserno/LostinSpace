@@ -39,6 +39,7 @@ public class Ship {
 
     private GameWorld world;
 
+
     public Ship(float x, float y, float width, float height, GameWorld world,float screenHeight){
         position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
