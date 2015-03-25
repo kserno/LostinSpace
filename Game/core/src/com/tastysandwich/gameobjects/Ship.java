@@ -16,10 +16,13 @@ public class Ship {
 
     private float prepona;
 
-    private float currentRotation, destinedRotation;
-    private float rotationSpeed, difRotation;
+    private float currentRotation, destinedRotation, rotatePerFrame;
+    private static float rotationSpeed = 50;
     private float height,width;
     private int goToY,goToX;
+
+    private static float offset;
+    private static float speed;
 
     private float originX, originY;
 
@@ -30,15 +33,13 @@ public class Ship {
 
     private boolean isAlive= true;
 
-    private float[] aVertices;
+    private static float[] aVertices;
 
     private float sx,sy;
 
-    private boolean rotate;
-
     private GameWorld world;
 
-    public Ship(float x, float y, float width, float height, GameWorld world){
+    public Ship(float x, float y, float width, float height, GameWorld world,float screenHeight){
         position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
         sx = x;
@@ -46,8 +47,8 @@ public class Ship {
         this.height = height;
         this.width = width;
         this.world = world;
-        Gdx.app.log("screen", String.valueOf(Gdx.graphics.getWidth()));
-        Gdx.app.log("width", String.valueOf(width));
+        offset = screenHeight / 72;
+        speed = screenHeight / 5.14f;
         boundingPolygon = new Polygon();
         goToY = (int) ((int) position.y+this.height/2+100);
         goToX = (int) position.x;
@@ -67,58 +68,31 @@ public class Ship {
 
         position.add(velocity.cpy().scl(delta));
 
-        if (originY > goToY-5 && originY < goToY+5){
+        if (originY > goToY-offset && originY < goToY+offset){
             velocity.y = 0;
         }else if(originY > goToY){
-            velocity.y = (-140+currentRotation*2)*world.getGameSpeed();
+            velocity.y = (-speed+currentRotation*2)*world.getGameSpeed();
         }else if (originY < goToY){
-            velocity.y = (140+currentRotation*2)*world.getGameSpeed();
+            velocity.y = (speed+currentRotation*2)*world.getGameSpeed();
         }
-
-        /*if (originY > goToY-10 && originY < goToY+10){
-            velocity.y = 0;
-        }else if(originY > goToY){
-            velocity.y = -140*world.getGameSpeed();
-        }else if (originY < goToY){
-            velocity.y = 140*world.getGameSpeed();
-        }*/
 
         prepona = (float) Math.sqrt(((goToX - originX)*(goToX - originX)) + ((originY - goToY)*(originY - goToY)));
         destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona))*-1;
         rotationChange(delta);
-
-
-
-        /*if (destinedRotation>currentRotation+2){
-            currentRotation+=rotationSpeed*delta*world.getGameSpeed();
-        }else if (destinedRotation<currentRotation-2){
-            currentRotation-=rotationSpeed*delta*world.getGameSpeed();
-        }*/
 
         boundingPolygon.setPosition(originX, originY);
         boundingPolygon.setRotation(currentRotation);
     }
 
     private void rotationChange(float delta) {
-        if (!rotate && (Math.abs(currentRotation - destinedRotation)) > 3) {
-            difRotation = currentRotation - destinedRotation;
-            if (difRotation < 0) difRotation = -difRotation;
-            rotationSpeed = difRotation / (0.4f / delta);
-            rotate = true;
-        } else {
+        rotatePerFrame = rotationSpeed * world.getGameSpeed() * delta;
+        if(!((Math.abs(currentRotation - destinedRotation)) < 3)) {
             if (destinedRotation+2 > currentRotation) {
-                currentRotation += rotationSpeed;
+                currentRotation += rotatePerFrame;
             } else if (destinedRotation-2 < currentRotation) {
-                currentRotation -= rotationSpeed;
+                currentRotation -= rotatePerFrame;
+            }
         }
-        if((Math.abs(currentRotation - destinedRotation)) < 3) {
-            rotationSpeed =0;
-            rotate = false;
-        }
-
-        }
-        Gdx.app.log("rotate ", String.valueOf(rotate));
-
     }
 
     public void onClick(int screenX, int screenY){
@@ -130,9 +104,9 @@ public class Ship {
         }
     }
     public void onRelease() {
-        if (velocity.y == 0) return;
+        /*if (velocity.y == 0) return;
         goToY = (velocity.y > 0) ? (int) (position.y + height) : (int) (position.y) ;
-        goToX = (int) world.width;
+        goToX = (int) world.width;*/
     }
 
     public float getX() {

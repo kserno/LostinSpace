@@ -44,9 +44,7 @@ public class GameRenderer {
     private Energy energy;
     private Texture textAsteroids[];
     private TextureRegion scoreTable, highscoreTable;
-    private Sprite[] energyBar;
-
-    private ShapeRenderer renderer;
+    private Texture[] energyBar;
 
     private ImageButton ibTryAgain;
 
@@ -64,9 +62,6 @@ public class GameRenderer {
         batcher = new SpriteBatch();
         // Attach batcher to camera
         batcher.setProjectionMatrix(cam.combined);
-
-        renderer = new ShapeRenderer();
-        renderer.setProjectionMatrix(cam.combined);
 
         initAssets();
         initGameObjects();
@@ -116,19 +111,6 @@ public class GameRenderer {
                 break;
         }
         batcher.end();
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        //renderer.polygon(ship.getPole());
-        for (int i = 0; i <= myWorld.nAsteroids; i++) {
-            renderer.polygon(myWorld.asteroids[i].getPole());
-        }
-        if (myWorld.geteIsActive()) {
-            renderer.polygon(energy.getaVertices());
-        }
-
-        renderer.end();
-
-
-
     }
 
     private void renderReady(float runTime) {
@@ -140,8 +122,7 @@ public class GameRenderer {
     }
 
     private void renderEnergyBar() {
-
-        batcher.draw(energyBar[ship.getCurrentEnergy()], (width / 5) * 4, (height / 10) * 9);
+        batcher.draw(energyBar[ship.getCurrentEnergy()], (width / 4) * 3, (height / 18) * 16, width / 4, height/18);
     }
 
     private void drawBackground() {

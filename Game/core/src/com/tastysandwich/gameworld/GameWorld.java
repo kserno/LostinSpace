@@ -56,7 +56,7 @@ public class GameWorld {
         asteroids = new Asteroid[9];
         this.width = width;
         this.height = height;
-        ship = new Ship(width / 12, height / 3, width / 6, width / 6 / 3 * 2, this);
+        ship = new Ship(width / 12, height / 3, width / 6, width / 6 / 3 * 2, this, height);
         r = new Random();
         ibTryAgain = new ImageButton(AssetLoader.sdTryAgain);
         ibTryAgain.setPosition(width / 2 - width / 5 / 2, height / 2);

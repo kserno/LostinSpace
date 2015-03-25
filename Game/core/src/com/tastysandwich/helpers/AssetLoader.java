@@ -2,6 +2,7 @@ package com.tastysandwich.helpers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -35,9 +36,7 @@ public class AssetLoader {
 
     public static BitmapFont font;
 
-    private static int LoadingPercent;
-
-    public static Sprite[] energyBar;
+    public static Texture[] energyBar;
 
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
     public static Sprite sMenuBackground;
@@ -68,7 +67,7 @@ public class AssetLoader {
 
         // FONT
         font = new BitmapFont(Gdx.files.internal("data/font/font.fnt"));
-        font.setColor(255.0f, 255.0f, 255.0f, 1.0f);
+        font.setColor(Color.WHITE);
         font.setScale( .9f,-.9f);
 
         loadButtons(width, height);
@@ -154,8 +153,7 @@ public class AssetLoader {
     private static void loadHangarShips() {
         hangarShips = new SpriteDrawable[3];
         for(int i=0; i<3; i++) {
-            Texture texture = new Texture(Gdx.files.internal("data/hangarships/" + (i+ 1) + ".png"));
-            hangarShip = new Sprite(texture);
+            hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/" + (i+ 1) + ".png")));
             hangarShip.setSize(200f, 150f);
             hangarShip.flip(false, true);
             hangarShips[i] = new SpriteDrawable(hangarShip);
@@ -166,11 +164,9 @@ public class AssetLoader {
     }
 
     private static void loadEnergyBar(int width, int height) {
-        energyBar = new Sprite[11];
+        energyBar = new Texture[11];
         for (int i=0; i<=10; i++){
-            Texture bar = new Texture(Gdx.files.internal("data/energybar/" + i + ".png"));
-            energyBar[i] = new Sprite(bar);
-            energyBar[i].setSize(width / 4, height / 16);
+            energyBar[i] = new Texture(Gdx.files.internal("data/energybar/" + i + ".png"));
         }
     }
 
