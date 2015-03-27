@@ -32,7 +32,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        runTime += delta;
+        if (world.getCurrentState()!= GameWorld.GameState.PAUSE) runTime += delta;
         world.update(delta, runTime);
         renderer.render(runTime);
     }

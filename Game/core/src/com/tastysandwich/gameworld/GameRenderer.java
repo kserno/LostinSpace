@@ -50,6 +50,7 @@ public class GameRenderer {
 
     private boolean updateEnergy = false;
 
+    private ShapeRenderer shapeRenderer;
 
     public GameRenderer(GameWorld world, float width, float height) {
         myWorld = world;
@@ -63,6 +64,8 @@ public class GameRenderer {
         // Attach batcher to camera
         batcher.setProjectionMatrix(cam.combined);
 
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(cam.combined);
         initAssets();
         initGameObjects();
     }
@@ -109,8 +112,27 @@ public class GameRenderer {
             case READY:
                 renderReady(runTime);
                 break;
+            case PAUSE:
+                renderPause(runTime);
+                break;
         }
         batcher.end();
+    }
+
+    private void renderPause(float runTime) {
+        batcher.enableBlending();
+        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
+        for (int i = 0; i <= myWorld.nAsteroids; i++) {
+            batcher.draw(textAsteroids[myWorld.asteroids[i].getType()], myWorld.asteroids[i].getX(), myWorld.asteroids[i].getY(), myWorld.asteroids[i].getRadius() / 2.0f, myWorld.asteroids[i].getRadius() / 2.0f,  myWorld.asteroids[i].getRadius(), myWorld.asteroids[i].getRadius(), 1, 1,
+                    myWorld.asteroids[i].getRotation(), 0, 0, 1000, 1000, false, false);
+        }
+
+        if (updateEnergy) {
+            batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
+        }
+        String score = myWorld.getScore() + "";
+        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/6);
+        renderEnergyBar();
     }
 
     private void renderReady(float runTime) {
@@ -118,7 +140,7 @@ public class GameRenderer {
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         String score = myWorld.getScore() + "";
         renderEnergyBar();
-        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/6);
+        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - (12 * score.length()), height / 6);
     }
 
     private void renderEnergyBar() {
@@ -169,6 +191,11 @@ public class GameRenderer {
         String score = myWorld.getScore() + "";
         AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/6);
         renderEnergyBar();
+
+        // render rect for pause
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.rect(myWorld.getPauseButton().getX(), myWorld.getPauseButton().getY(), myWorld.getPauseButton().getWidth(), myWorld.getPauseButton().getHeight());
+        shapeRenderer.end();
     }
 
     private void renderGameOver() {

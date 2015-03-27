@@ -35,11 +35,16 @@ public class InputHandler implements InputProcessor {
         if (world.getCurrentState() == GameWorld.GameState.READY) {
             world.start();
         }
+        if (world.getCurrentState() == GameWorld.GameState.PAUSE) {
+            world.resume();
+        }
         if (world.getCurrentState() == GameWorld.GameState.GAMEOVER || world.getCurrentState() == GameWorld.GameState.HISCORE) {
             if(world.getTryAgainRect().contains(screenX, screenY)){
                 world.tryAgain();
             }
         }
+        if (world.getCurrentState() == GameWorld.GameState.RUNNING && world.getPauseButton().contains((float) screenX, (float) screenY)) world.Pause();
+
         return false;
     }
 

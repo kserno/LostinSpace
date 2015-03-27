@@ -38,17 +38,16 @@ public class GameWorld {
     private ImageButton ibTryAgain;
     private Rectangle tryAgainRect;
 
-    public void start() {
-        Gdx.app.log("GameState", "RUNNING");
-        currentState = GameState.RUNNING;
+    private Rectangle pauseButton;
 
+    public void start() {
+        currentState = GameState.RUNNING;
     }
 
     public enum GameState {
 
         READY, RUNNING, GAMEOVER, HISCORE, PAUSE
     }
-
 
     public GameWorld(float width, float height) {
         currentState = GameState.READY;
@@ -58,6 +57,8 @@ public class GameWorld {
         this.height = height;
         ship = new Ship(width / 12, height / 3, width / 6, width / 6 / 3 * 2, this, height);
         r = new Random();
+        pauseButton = new Rectangle();
+        pauseButton.set(width - width / 10, height/10, width-width/20, height/10 + height/20);
         ibTryAgain = new ImageButton(AssetLoader.sdTryAgain);
         ibTryAgain.setPosition(width / 2 - width / 5 / 2, height / 2);
         tryAgainRect = new Rectangle(width / 2 - width / 5 / 2, height / 2, width / 5, height / 20 * 3);
@@ -73,7 +74,7 @@ public class GameWorld {
                 updateRunning(delta, runTime);
                 break;
             case GAMEOVER:
-                updateGameOver(delta);
+                updateGameOver();
             case HISCORE:
                 updateHiScore();
                 break;
@@ -91,7 +92,7 @@ public class GameWorld {
     private void updateHiScore() {
     }
 
-    private void updateGameOver(float delta) {
+    private void updateGameOver() {
 
     }
 
@@ -202,16 +203,16 @@ public class GameWorld {
         currentState = GameWorld.GameState.READY;
     }
 
-    public void restart() {
-        ship.restart();
-    }
-
     public boolean geteIsActive() {
         return eIsActive;
     }
 
     public Ship getShip() {
         return ship;
+    }
+
+    public void Pause() {
+        currentState = GameState.PAUSE;
     }
 
     public Asteroid[] getAsteroids() {
@@ -239,7 +240,6 @@ public class GameWorld {
         return Intersector.overlapConvexPolygons(polygon1, polygon2);
     }
 
-
     public GameState getCurrentState() {
         return currentState;
     }
@@ -247,4 +247,13 @@ public class GameWorld {
     public float getGameSpeed() {
         return gameSpeed;
     }
+
+    public Rectangle getPauseButton() {
+        return pauseButton;
+    }
+
+    public void resume() {
+        currentState = GameState.RUNNING;
+    }
+
 }
