@@ -87,8 +87,6 @@ public class GameRenderer {
     }
 
     public void render(float runTime) {
-
-        drawBackground();
         if (!myWorld.geteIsActive()) {
             energy = null;
             updateEnergy = false;
@@ -120,6 +118,7 @@ public class GameRenderer {
     }
 
     private void renderPause(float runTime) {
+        drawBackground(false);
         batcher.enableBlending();
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         for (int i = 0; i <= myWorld.nAsteroids; i++) {
@@ -131,11 +130,12 @@ public class GameRenderer {
             batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
         }
         String score = myWorld.getScore() + "";
-        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/6);
+        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - (12 * score.length()), height / 6);
         renderEnergyBar();
     }
 
     private void renderReady(float runTime) {
+        drawBackground(true);
         batcher.enableBlending();
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         String score = myWorld.getScore() + "";
@@ -147,16 +147,18 @@ public class GameRenderer {
         batcher.draw(energyBar[ship.getCurrentEnergy()], (width / 4) * 3, (height / 18) * 16, width / 4, height/18);
     }
 
-    private void drawBackground() {
+    private void drawBackground(boolean moving) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if(moving) {
+            offset -= (width * Gdx.graphics.getDeltaTime() / (8 / myWorld.getGameSpeed()));
+            offset2 -= (width * Gdx.graphics.getDeltaTime() / (4 / myWorld.getGameSpeed()));
+            offset3 -= (width * Gdx.graphics.getDeltaTime() / (6 / myWorld.getGameSpeed()));
+            offset = offset % width;
+            offset2 = offset2 % width;
+            offset3 = offset3 % width;
+        }
 
-        offset -=  (width * Gdx.graphics.getDeltaTime()/(8/myWorld.getGameSpeed()));
-        offset2 -=  (width * Gdx.graphics.getDeltaTime()/(4/myWorld.getGameSpeed()));
-        offset3 -=  (width * Gdx.graphics.getDeltaTime()/(6/myWorld.getGameSpeed()));
-        offset = offset % width;
-        offset2 = offset2 % width;
-        offset3 = offset3 % width;
         batcher.begin();
         background.setX(offset);
         background.draw(batcher);
@@ -172,25 +174,22 @@ public class GameRenderer {
         stars1.draw(batcher);
         stars1.setX(offset3 + width);
         stars1.draw(batcher);
-
-
     }
 
     private void renderRunning(float runTime) {
+        drawBackground(true);
         batcher.enableBlending();
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
-
         for (int i = 0; i <= myWorld.nAsteroids; i++) {
             batcher.draw(textAsteroids[myWorld.asteroids[i].getType()], myWorld.asteroids[i].getX(), myWorld.asteroids[i].getY(), myWorld.asteroids[i].getRadius() / 2.0f, myWorld.asteroids[i].getRadius() / 2.0f,  myWorld.asteroids[i].getRadius(), myWorld.asteroids[i].getRadius(), 1, 1,
                     myWorld.asteroids[i].getRotation(), 0, 0, 1000, 1000, false, false);
         }
-
         if (updateEnergy) {
             batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
         }
         String score = myWorld.getScore() + "";
-        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/6);
         renderEnergyBar();
+        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/6);
 
         // render rect for pause
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -199,6 +198,7 @@ public class GameRenderer {
     }
 
     private void renderGameOver() {
+        drawBackground(true);
         batcher.enableBlending();
         batcher.draw(scoreTable, width /8, height/8, width-(width/8+width/8), height-(height/8+height/8));
         ibTryAgain.draw(batcher, 50f);
@@ -207,6 +207,7 @@ public class GameRenderer {
     }
 
     private void renderHiScore() {
+        drawBackground(true);
         batcher.enableBlending();
         batcher.draw(highscoreTable, width /8, height/8, width -(width/8+width/8), height-(height/8+height/8));
         ibTryAgain.draw(batcher, 50f);

@@ -51,7 +51,7 @@ public class Ship {
         offset = screenHeight / 72;
         speed = screenHeight / 5.14f;
         boundingPolygon = new Polygon();
-        goToY = (int) ((int) position.y+this.height/2+100);
+        goToY = (int) ((int) position.y+height/2);
         goToX = (int) position.x;
         aVertices = new float[] {
                 width / 2, 0,

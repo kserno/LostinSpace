@@ -57,8 +57,7 @@ public class GameWorld {
         this.height = height;
         ship = new Ship(width / 12, height / 3, width / 6, width / 6 / 3 * 2, this, height);
         r = new Random();
-        pauseButton = new Rectangle();
-        pauseButton.set(width - width / 10, height/10, width-width/20, height/10 + height/20);
+        pauseButton = new Rectangle(width - width / 10, height/10, width-width/20, height/10 + height/20);
         ibTryAgain = new ImageButton(AssetLoader.sdTryAgain);
         ibTryAgain.setPosition(width / 2 - width / 5 / 2, height / 2);
         tryAgainRect = new Rectangle(width / 2 - width / 5 / 2, height / 2, width / 5, height / 20 * 3);
