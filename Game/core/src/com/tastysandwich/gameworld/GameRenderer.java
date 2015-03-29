@@ -39,18 +39,18 @@ public class GameRenderer {
     private Animation energyAnimation;
 
     private float offset = 0,offset2 = 0,offset3 = 0;
-    private Ship ship;
     private float width, height;
+
+    private Ship ship;
     private Energy energy;
     private Texture textAsteroids[];
     private TextureRegion scoreTable, highscoreTable;
     private Texture[] energyBar;
+    private Sprite pause;
 
     private ImageButton ibTryAgain;
 
     private boolean updateEnergy = false;
-
-    private ShapeRenderer shapeRenderer;
 
     public GameRenderer(GameWorld world, float width, float height) {
         myWorld = world;
@@ -61,11 +61,8 @@ public class GameRenderer {
         cam.position.set(width/2f, height/2f, 0);
 
         batcher = new SpriteBatch();
-        // Attach batcher to camera
         batcher.setProjectionMatrix(cam.combined);
 
-        shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setProjectionMatrix(cam.combined);
         initAssets();
         initGameObjects();
     }
@@ -81,6 +78,8 @@ public class GameRenderer {
         scoreTable = AssetLoader.tscorebg;
         ibTryAgain = myWorld.getIbTryAgain();
         energyBar = AssetLoader.energyBar;
+        pause = AssetLoader.pause;
+        pause.setPosition(width - width / 10, height/20);
     }
     private void initGameObjects() {
         ship = myWorld.getShip();
@@ -190,11 +189,7 @@ public class GameRenderer {
         String score = myWorld.getScore() + "";
         renderEnergyBar();
         AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/6);
-
-        // render rect for pause
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.rect(myWorld.getPauseButton().getX(), myWorld.getPauseButton().getY(), myWorld.getPauseButton().getWidth(), myWorld.getPauseButton().getHeight());
-        shapeRenderer.end();
+        pause.draw(batcher);
     }
 
     private void renderGameOver() {

@@ -26,7 +26,7 @@ public class Ship {
 
     private float originX, originY;
 
-    private int energy = 0;
+    private int energy = 2;
     private boolean shield = true;
 
     private Polygon boundingPolygon;
@@ -104,12 +104,6 @@ public class Ship {
             goToX = screenX;
         }
     }
-    public void onRelease() {
-        /*if (velocity.y == 0) return;
-        goToY = (velocity.y > 0) ? (int) (position.y + height) : (int) (position.y) ;
-        goToX = (int) world.width;*/
-    }
-
     public float getX() {
         return position.x;
     }
@@ -171,7 +165,7 @@ public class Ship {
         goToY = (int) ((int) position.y+this.height/2+100);
         goToX = (int) position.x;
         shield = true;
-        energy = 0;
+        energy = 2;
     }
 
     public int getCurrentEnergy() {

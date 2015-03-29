@@ -38,6 +38,8 @@ public class AssetLoader {
 
     public static Texture[] energyBar;
 
+    public static Sprite pause;
+
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
     public static Sprite sMenuBackground;
 
@@ -151,6 +153,7 @@ public class AssetLoader {
         loadEnergyBar(width, height);
         loadGOTables();
         loadHangarShips();
+        loadPause(width, height);
     }
 
     private static void loadHangarShips() {
@@ -165,12 +168,8 @@ public class AssetLoader {
                 hangarShip.setSize(200f, 130f);
                 hangarShip.flip(false, true);
             }
-
             hangarShips[i] = new SpriteDrawable(hangarShip);
-
         }
-
-
     }
 
     private static void loadEnergyBar(int width, int height) {
@@ -191,6 +190,10 @@ public class AssetLoader {
         highscorebg = new Texture(Gdx.files.internal("data/skins/newhighscore.png"));
         thighscorebg = new TextureRegion(highscorebg);
         thighscorebg.flip(false, true);
+    }
+    private static void loadPause(int width, int height) {
+        pause = new Sprite(new Texture(Gdx.files.internal("data/pause.png")));
+        pause.setSize(width/10, height/10 + height/20);
     }
 
     private static void loadEnergy() {
