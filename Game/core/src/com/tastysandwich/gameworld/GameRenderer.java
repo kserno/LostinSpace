@@ -40,6 +40,7 @@ public class GameRenderer {
 
     private float offset = 0,offset2 = 0,offset3 = 0;
     private float width, height;
+    private float bgSpeed, bgSpeed2, bgSpeed3;
 
     private Ship ship;
     private Energy energy;
@@ -56,6 +57,9 @@ public class GameRenderer {
         myWorld = world;
         this.width = width;
         this.height = height;
+        bgSpeed = width / 10;
+        bgSpeed2 = width / 8;
+        bgSpeed3 = width / 6;
         cam = new OrthographicCamera();
         cam.setToOrtho(true,width,height);
         cam.position.set(width/2f, height/2f, 0);
@@ -150,12 +154,12 @@ public class GameRenderer {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if(moving) {
-            offset -= (width * Gdx.graphics.getDeltaTime() / (8 / myWorld.getGameSpeed()));
-            offset2 -= (width * Gdx.graphics.getDeltaTime() / (4 / myWorld.getGameSpeed()));
-            offset3 -= (width * Gdx.graphics.getDeltaTime() / (6 / myWorld.getGameSpeed()));
-            offset = offset % width;
-            offset2 = offset2 % width;
-            offset3 = offset3 % width;
+            if(offset < -width) offset = 0;
+            if(offset2 < -width) offset2 = 0;
+            if(offset3 < -width) offset3 = 0;
+            offset = offset - bgSpeed * Gdx.graphics.getDeltaTime() * myWorld.getGameSpeed();
+            offset2 = offset2 - bgSpeed2 * myWorld.getGameSpeed() * Gdx.graphics.getDeltaTime();
+            offset3 = offset3 - bgSpeed3 * myWorld.getGameSpeed() * Gdx.graphics.getDeltaTime();
         }
 
         batcher.begin();
@@ -164,15 +168,15 @@ public class GameRenderer {
         background.setX(offset + width);
         background.draw(batcher);
 
-        stars2.setX(offset2);
-        stars2.draw(batcher);
-        stars2.setX(offset2 + width);
-        stars2.draw(batcher);
+        stars1.setX(offset2);
+        stars1.draw(batcher);
+        stars1.setX(offset2 + width);
+        stars1.draw(batcher);
 
-        stars1.setX(offset3);
-        stars1.draw(batcher);
-        stars1.setX(offset3 + width);
-        stars1.draw(batcher);
+        stars2.setX(offset3);
+        stars2.draw(batcher);
+        stars2.setX(offset3 + width);
+        stars2.draw(batcher);
     }
 
     private void renderRunning(float runTime) {

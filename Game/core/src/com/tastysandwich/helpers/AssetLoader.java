@@ -3,14 +3,13 @@ package com.tastysandwich.helpers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.tastysandwich.SmartFontGenerator;
 
 /**
  * Created by solit_000 on 6.2.2015.
@@ -72,16 +71,17 @@ public class AssetLoader {
         if (!prefs.contains("TotalEnergy")) {
             prefs.putInteger("TotalEnergy", 0);
         }
-        loadFont();
+        loadFont(width);
         loadButtons(width, height);
         loadGameAssets(width, height);
         loadBackgrounds(width, height);
     }
 
-    private static void loadFont() {
-        SmartFontGenerator fontGen = new SmartFontGenerator();
+    private static void loadFont(int width) {
         FileHandle exoFile = Gdx.files.internal("data/font/Raleway-SemiBold.ttf");
-        font = fontGen.createFont(exoFile, "exo-large", 64);
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(exoFile);
+        font = generator.generateFont((width/18));
+        generator.dispose();
         font.setScale(1f, -1f);
     }
 
