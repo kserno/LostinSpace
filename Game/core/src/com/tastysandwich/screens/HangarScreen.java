@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.tastysandwich.helpers.AssetLoader;
 import com.tastysandwich.game.MainClass;
+import com.tastysandwich.helpers.HangarInput;
 import com.tastysandwich.screens.Menu;
 
 import static com.badlogic.gdx.scenes.scene2d.ui.ImageButton.*;
@@ -26,103 +28,41 @@ import static com.badlogic.gdx.scenes.scene2d.ui.ImageButton.*;
  */
 public class HangarScreen implements Screen {
 
-    private float width,height;
+    public float width,height;
 
-    private Stage stage;
     private OrthographicCamera cam;
     private SpriteBatch batcher;
-
-    private SpriteDrawable imgbMenu;
-
-    private Sprite menuBackground;
-
-    private ImageButton menu;
-
-    private ImageButton left, right;
-
-    private ImageButton ship;
-
-    private SpriteDrawable[] hangarShips;
-
     private ShapeRenderer renderer;
 
+    private MainClass game;
+
+    private Sprite hangarBackground;
+    private Sprite[] hangarShips;
+
     private int nship;
+
+    private Rectangle menuButton, leftArrow, rightArrow;
 
     public HangarScreen(final float width, final float height, final MainClass game) {
         this.width = width;
         this.height = height;
+        this.game = game;
         cam = new OrthographicCamera();
         cam.setToOrtho(true, width, height);
 
-        renderer = new ShapeRenderer();
+        menuButton = new Rectangle(width / 24 * 9 , height / 16 * 2, width / 12 * 3, height / 6);
+        leftArrow = new Rectangle(width / 20, height / 20 * 9, width / 20, width / 20);
+        rightArrow = new Rectangle(width - width / 10, height / 20 * 9, width / 20, width / 20);
 
+        renderer = new ShapeRenderer();
         batcher = new SpriteBatch();
-        // Attach batcher to camera
         batcher.setProjectionMatrix(cam.combined);
 
         nship = AssetLoader.getSelectedShip();
-
-        stage = new Stage(new ScreenViewport(cam));
-        Gdx.input.setInputProcessor(stage); //** stage is responsive **//
-
-        stage.clear();
-
-        menuBackground = AssetLoader.sMenuBackground;
-
-        imgbMenu = AssetLoader.sdMenu;
-
+        hangarBackground = AssetLoader.hangarBackground;
         hangarShips = AssetLoader.hangarShips;
 
-        ship = new ImageButton(hangarShips[nship]);
-
-        menu = new ImageButton(imgbMenu); //** Button text and style **//
-        menu.setPosition(width / 2 - width / 5 / 2, height / 3); //** Button location **//
-        menu.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new Menu(width, height, game ));
-                return true;
-            }});
-        stage.addActor(menu);
-
-        left = new ImageButton(imgbMenu);
-        left.setPosition(0, height/2); //** Button location **//
-        left.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if (nship== 0) nship =2; else nship--;
-                ship.setStyle(new ImageButtonStyle(hangarShips[nship], hangarShips[nship], hangarShips[nship], hangarShips[nship], hangarShips[nship], hangarShips[nship]));
-                return true;
-            }});
-        stage.addActor(left);
-        right = new ImageButton(imgbMenu);
-        right.setPosition(width- width/5, height/2); //** Button location **//
-        right.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if (nship== 2) nship =0; else nship++;
-                ship.setStyle(new ImageButtonStyle(hangarShips[nship],hangarShips[nship],hangarShips[nship],hangarShips[nship],hangarShips[nship],hangarShips[nship] ));
-                return true;
-            }});
-        stage.addActor(right);
-
-        ship = new ImageButton(hangarShips[nship]);
-        ship.setPosition(width / 2 - width / 5 / 2, height / 2);
-        ship.addListener(new InputListener() {
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (nship == 2 && AssetLoader.getTotalEnergy() < 500) {
-                   // do nothing
-                } else {
-                    AssetLoader.setSelectedShip(nship);
-                    AssetLoader.loadShip(nship);
-                }
-                return true;
-            }
-        });
-        stage.addActor(ship);
-
-
-
-
-
-
+        Gdx.input.setInputProcessor(new HangarInput(this));
     }
 
 
@@ -137,21 +77,16 @@ public class HangarScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batcher.begin();
-        menuBackground.draw(batcher);
-        menu.draw(batcher, 50f);
-        left.draw(batcher, 50f);
-        right.draw(batcher, 50f);
-
-        ship.draw(batcher, 50f);
+        hangarBackground.draw(batcher);
+        hangarShips[nship].draw(batcher);
         batcher.end();
+
         if (AssetLoader.getSelectedShip()== nship) {
             renderer.begin(ShapeRenderer.ShapeType.Line);
             renderer.setColor(Color.GREEN);
-            renderer.rect(ship.getX(), ship.getY()-ship.getHeight(), ship.getWidth(), ship.getHeight());
+            renderer.rect(hangarShips[nship].getX(), hangarShips[nship].getY() + width / 8, hangarShips[nship].getWidth(), hangarShips[nship].getHeight());
             renderer.end();
         }
-
-
     }
 
     @Override
@@ -178,5 +113,34 @@ public class HangarScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public Rectangle getMenuButton() { return menuButton; }
+
+    public Rectangle getLeftArrow() { return leftArrow; }
+
+    public Rectangle getRightArrow() { return rightArrow; }
+
+    public Rectangle getShipRect() { return hangarShips[nship].getBoundingRectangle(); }
+
+    public void setScreen() {
+        game.setScreen(new Menu(width, height, game ));
+    }
+
+    public void moveLeft() {
+        if (nship== 2) nship =0; else nship++;
+    }
+
+    public void moveRight() {
+        if (nship== 2) nship =0; else nship++;
+    }
+
+    public void changeShip() {
+        if (nship == 2 && AssetLoader.getTotalEnergy() < 500) {
+            // do nothing
+        } else {
+            AssetLoader.setSelectedShip(nship);
+            AssetLoader.loadShip(nship);
+        }
     }
 }

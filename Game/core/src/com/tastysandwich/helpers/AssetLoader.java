@@ -43,7 +43,7 @@ public class AssetLoader {
     public static Sprite pause;
 
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
-    public static Sprite sMenuBackground;
+    public static Sprite sMenuBackground, hangarBackground;
 
     public static SpriteDrawable sdPlay,sdHangar,sdTryAgain, sdMenu, sdSoundsT, sdSoundsF;
 
@@ -53,7 +53,7 @@ public class AssetLoader {
 
     public static Sprite hangarShip;
 
-    public static SpriteDrawable[] hangarShips;
+    public static Sprite[] hangarShips;
 
 
 
@@ -93,6 +93,14 @@ public class AssetLoader {
         sMenuBackground.flip(false,true);
         sMenuBackground.setY(0);
         sMenuBackground.setX(0);
+
+        texture = new Texture(Gdx.files.internal("data/hangarbackground.jpg"));
+        texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        hangarBackground = new Sprite(texture);
+        hangarBackground.setSize(width, height);
+        hangarBackground.flip(false,true);
+        hangarBackground.setY(0);
+        hangarBackground.setX(0);
 
     }
 
@@ -151,23 +159,25 @@ public class AssetLoader {
         loadEnergy();
         loadEnergyBar(width, height);
         loadGOTables();
-        loadHangarShips();
+        loadHangarShips(width, height);
         loadPause(width, height);
     }
 
-    private static void loadHangarShips() {
-        hangarShips = new SpriteDrawable[3];
+    private static void loadHangarShips(int width, int height) {
+        hangarShips = new Sprite[3];
         for(int i=0; i<3; i++) {
             if (i ==2 && getTotalEnergy() < 500) {
                 hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/lockedship2.png")));
-                hangarShip.setSize(200f, 130f);
+                hangarShip.setSize(width / 2, height / 2);
+                hangarShip.setPosition(width / 4, height / 8);
                 hangarShip.flip(false, true);
             } else {
                 hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/" + (i+ 1) + ".png")));
-                hangarShip.setSize(200f, 130f);
+                hangarShip.setSize(width / 2, height / 2);
+                hangarShip.setPosition(width / 4, height / 8);
                 hangarShip.flip(false, true);
             }
-            hangarShips[i] = new SpriteDrawable(hangarShip);
+            hangarShips[i] = new Sprite(hangarShip);
         }
     }
 

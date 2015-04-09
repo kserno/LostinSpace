@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -39,6 +40,8 @@ public class Menu implements Screen {
 
     private Sprite menuBackground;
 
+    private String score;
+    private float scoreWidth, scoreHeight;
 
     public Menu(final float width, final float height, final MainClass game) {
         this.width = width;
@@ -50,12 +53,16 @@ public class Menu implements Screen {
         // Attach batcher to camera
         batcher.setProjectionMatrix(cam.combined);
 
+        score = String.valueOf(AssetLoader.getHighScore());
+
+        scoreWidth = AssetLoader.font.getBounds(score).width;
+        scoreHeight = AssetLoader.font.getBounds(score).height;
+
         stage = new Stage(new ScreenViewport(cam));
         Gdx.input.setInputProcessor(stage); //** stage is responsive **//
-
         stage.clear();
-        menuBackground = AssetLoader.sMenuBackground;
 
+        menuBackground = AssetLoader.sMenuBackground;
         imgbPlay = AssetLoader.sdPlay;
         imgbHangar = AssetLoader.sdHangar;
         imgbSoundsT = AssetLoader.sdSoundsT;
@@ -115,7 +122,7 @@ public class Menu implements Screen {
         Play.draw(batcher, 50f);
         Hangar.draw(batcher, 50f);
         Sounds.draw(batcher, 50f);
-        AssetLoader.font.draw(batcher,String.valueOf(AssetLoader.getHighScore()), width/2 - (20 * String.valueOf(AssetLoader.getHighScore()).length()), height/20 * 15);
+        AssetLoader.font.draw(batcher,score , width/2 - scoreWidth/2, height/20 * 15);
         batcher.end();
 
     }

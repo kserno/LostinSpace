@@ -133,7 +133,7 @@ public class GameRenderer {
             batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
         }
         String score = myWorld.getScore() + "";
-        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - (12 * score.length()), height / 6);
+        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 6);
         renderEnergyBar();
     }
 
@@ -143,7 +143,7 @@ public class GameRenderer {
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         String score = myWorld.getScore() + "";
         renderEnergyBar();
-        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - (12 * score.length()), height / 6);
+        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 6);
     }
 
     private void renderEnergyBar() {
@@ -192,7 +192,7 @@ public class GameRenderer {
         }
         String score = myWorld.getScore() + "";
         renderEnergyBar();
-        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/6);
+        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height/6);
         pause.draw(batcher);
     }
 
@@ -202,7 +202,7 @@ public class GameRenderer {
         batcher.draw(scoreTable, width /8, height/8, width-(width/8+width/8), height-(height/8+height/8));
         ibTryAgain.draw(batcher, 50f);
         String score = myWorld.getScore() + "";
-        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/2 + height / 4);
+        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(),width / 2 - AssetLoader.font.getBounds(score).width / 2, height/2 + height / 4);
     }
 
     private void renderHiScore() {
@@ -211,7 +211,7 @@ public class GameRenderer {
         batcher.draw(highscoreTable, width /8, height/8, width -(width/8+width/8), height-(height/8+height/8));
         ibTryAgain.draw(batcher, 50f);
         String score = myWorld.getScore() + "";
-        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width/2 - (12 * score.length()), height/2 + height / 4);
+        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(),width / 2 - AssetLoader.font.getBounds(score).width / 2, height/2 + height / 4);
     }
 
 }
