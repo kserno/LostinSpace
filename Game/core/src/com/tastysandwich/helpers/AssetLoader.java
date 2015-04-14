@@ -23,13 +23,8 @@ public class AssetLoader {
     public static Animation shipAnimation;
     public static TextureRegion ship1, ship2, ship3;
 
-    //Energia
-    private static final int        FRAME_COLS = 37;         // #1
-    private static final int        FRAME_ROWS = 2;         // #2
-
-    public static Animation                       energyAnimation;          // #3
-    public static Texture                         energySheet;              // #4
-    public static TextureRegion[]                 energyFrames;
+    public static Animation energyAnimation;
+    public static Animation explosionAnimation;
 
     public static Texture scorebg, highscorebg;
     public static TextureRegion tscorebg, thighscorebg;
@@ -157,6 +152,7 @@ public class AssetLoader {
         loadGameBackground(width, height);
         loadAsteroids();
         loadEnergy();
+        loadExplosion();
         loadEnergyBar(width, height);
         loadGOTables();
         loadHangarShips(width, height);
@@ -164,17 +160,17 @@ public class AssetLoader {
     }
 
     private static void loadHangarShips(int width, int height) {
-        hangarShips = new Sprite[3];
-        for(int i=0; i<3; i++) {
-            if (i ==2 && getTotalEnergy() < 500) {
+        hangarShips = new Sprite[6];
+        for(int i=0; i<6; i++) {
+            if (i==2 && getTotalEnergy() < 500) {
                 hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/lockedship2.png")));
-                hangarShip.setSize(width / 2, height / 2);
+                hangarShip.setSize(width / 6 * 4, height / 6 * 4);
                 hangarShip.setPosition(width / 4, height / 8);
                 hangarShip.flip(false, true);
             } else {
                 hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/" + (i+ 1) + ".png")));
-                hangarShip.setSize(width / 2, height / 2);
-                hangarShip.setPosition(width / 4, height / 8);
+                hangarShip.setSize(width / 6 * 4, height / 6 * 4);
+                hangarShip.setPosition(width / 6, height / 8);
                 hangarShip.flip(false, true);
             }
             hangarShips[i] = new Sprite(hangarShip);
@@ -207,17 +203,32 @@ public class AssetLoader {
 
     private static void loadEnergy() {
         // ENERGY
-        energySheet = new Texture(Gdx.files.internal("data/energy_animation.png")); // #9
-        TextureRegion[][] tmp = TextureRegion.split(energySheet, energySheet.getWidth()/FRAME_COLS, energySheet.getHeight()/FRAME_ROWS);              // #10
-        energyFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        Texture energySheet = new Texture(Gdx.files.internal("data/energy_animation.png")); // #9
+        TextureRegion[][] tmp = TextureRegion.split(energySheet, energySheet.getWidth()/37, energySheet.getHeight()/2);              // #10
+        TextureRegion[] energyFrames = new TextureRegion[37 * 2];
         int index = 0;
-        for (int i = 0; i < FRAME_ROWS; i++) {
-            for (int j = 0; j < FRAME_COLS; j++) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 37; j++) {
                 energyFrames[index++] = tmp[i][j];
             }
         }
         energyAnimation = new Animation(0.027f, energyFrames);
         energyAnimation.setPlayMode(Animation.PlayMode.LOOP);
+    }
+
+    private static void loadExplosion() {
+        // ENERGY
+        Texture explosionSheet = new Texture(Gdx.files.internal("data/explosion_animation.png")); // #9
+        TextureRegion[][] tmp = TextureRegion.split(explosionSheet, explosionSheet.getWidth()/9, explosionSheet.getHeight()/5);              // #10
+        TextureRegion[] explosionFrames = new TextureRegion[9 * 5];
+        int index = 0;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
+                explosionFrames[index++] = tmp[i][j];
+            }
+        }
+        explosionAnimation = new Animation(0.027f, explosionFrames);
+        explosionAnimation.setPlayMode(Animation.PlayMode.NORMAL);
     }
 
     private static void loadAsteroids() {
@@ -238,14 +249,12 @@ public class AssetLoader {
 
         //hviezdy
         bg = new Texture(Gdx.files.internal("data/universe/stars1.png"));
-        bg.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         stars1 = new Sprite(bg);
         stars1.setSize(width, height);
         stars1.setY(0);
 
         //hviezdy
         bg = new Texture(Gdx.files.internal("data/universe/stars2.png"));
-        bg.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         stars2 = new Sprite(bg);
         stars2.setSize(width, height);
         stars2.setY(0);

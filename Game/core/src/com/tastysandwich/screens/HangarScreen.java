@@ -32,7 +32,6 @@ public class HangarScreen implements Screen {
 
     private OrthographicCamera cam;
     private SpriteBatch batcher;
-    private ShapeRenderer renderer;
 
     private MainClass game;
 
@@ -51,10 +50,9 @@ public class HangarScreen implements Screen {
         cam.setToOrtho(true, width, height);
 
         menuButton = new Rectangle(width / 24 * 9 , height / 16 * 2, width / 12 * 3, height / 6);
-        leftArrow = new Rectangle(width / 20, height / 20 * 9, width / 20, width / 20);
-        rightArrow = new Rectangle(width - width / 10, height / 20 * 9, width / 20, width / 20);
+        leftArrow = new Rectangle(width / 20, height / 30 * 13, width / 15, width / 15);
+        rightArrow = new Rectangle(width - width / 8.75f, height / 30 * 13, width / 15, width / 15);
 
-        renderer = new ShapeRenderer();
         batcher = new SpriteBatch();
         batcher.setProjectionMatrix(cam.combined);
 
@@ -78,15 +76,12 @@ public class HangarScreen implements Screen {
 
         batcher.begin();
         hangarBackground.draw(batcher);
-        hangarShips[nship].draw(batcher);
-        batcher.end();
-
         if (AssetLoader.getSelectedShip()== nship) {
-            renderer.begin(ShapeRenderer.ShapeType.Line);
-            renderer.setColor(Color.GREEN);
-            renderer.rect(hangarShips[nship].getX(), hangarShips[nship].getY() + width / 8, hangarShips[nship].getWidth(), hangarShips[nship].getHeight());
-            renderer.end();
+            hangarShips[nship+3].draw(batcher);
+        }else {
+            hangarShips[nship].draw(batcher);
         }
+        batcher.end();
     }
 
     @Override

@@ -37,6 +37,7 @@ public class GameRenderer {
     private Sprite background,stars1,stars2;
     private Animation shipAnimation;
     private Animation energyAnimation;
+    private Animation explosionAnimation;
 
     private float offset = 0,offset2 = 0,offset3 = 0;
     private float width, height;
@@ -77,6 +78,7 @@ public class GameRenderer {
         stars2 = AssetLoader.stars2;
         shipAnimation = AssetLoader.shipAnimation;
         textAsteroids = AssetLoader.asteroids;
+        explosionAnimation = AssetLoader.explosionAnimation;
         energyAnimation = AssetLoader.energyAnimation;
         highscoreTable = AssetLoader.thighscorebg;
         scoreTable = AssetLoader.tscorebg;
@@ -116,6 +118,8 @@ public class GameRenderer {
             case PAUSE:
                 renderPause(runTime);
                 break;
+            case DYING:
+                renderDying(runTime);
         }
         batcher.end();
     }
@@ -132,7 +136,6 @@ public class GameRenderer {
         if (updateEnergy) {
             batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
         }
-        String score = myWorld.getScore() + "";
         AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 6);
         renderEnergyBar();
     }
@@ -141,7 +144,6 @@ public class GameRenderer {
         drawBackground(true);
         batcher.enableBlending();
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
-        String score = myWorld.getScore() + "";
         renderEnergyBar();
         AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 6);
     }
@@ -190,10 +192,19 @@ public class GameRenderer {
         if (updateEnergy) {
             batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
         }
-        String score = myWorld.getScore() + "";
         renderEnergyBar();
         AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height/6);
         pause.draw(batcher);
+    }
+
+
+    private void renderDying(float runTime) {
+        drawBackground(true);
+        batcher.enableBlending();
+        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
+        batcher.draw(explosionAnimation.getKeyFrame(myWorld.dyingTime), ship.getX(), ship.getY(), ship.getWidth() * 1.5f, ship.getHeight()*1.5f);
+        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 6);
+
     }
 
     private void renderGameOver() {

@@ -25,6 +25,7 @@ public class GameWorld {
     public boolean eIsActive = false;
 
     public float score;
+    public float dyingTime = 0;
 
     public int nAsteroids = -1;
     public Asteroid asteroids[];
@@ -45,7 +46,7 @@ public class GameWorld {
 
     public enum GameState {
 
-        READY, RUNNING, GAMEOVER, HISCORE, PAUSE
+        READY, RUNNING, GAMEOVER, HISCORE, PAUSE, DYING
     }
 
     public GameWorld(float width, float height) {
@@ -79,8 +80,26 @@ public class GameWorld {
             case PAUSE:
                 updatePause();
                 break;
+            case DYING:
+                updateDying(delta);
+                break;
         }
 
+    }
+
+    private void updateDying(float delta) {
+        dyingTime += delta;
+        ship.update(delta);
+        if(dyingTime > 1) {
+            if (AssetLoader.getHighScore() < score) {
+                currentState = GameState.HISCORE;
+                AssetLoader.setHighScore((int) score);
+                Gdx.app.log("GameState ", "HISCORE");
+            } else {
+                currentState = GameState.GAMEOVER;
+                Gdx.app.log("GameState", "GAMEOVER");
+            }
+        }
     }
 
     private void updatePause() {
@@ -154,15 +173,7 @@ public class GameWorld {
             }
         }
         if (!ship.getIsAlive()) {
-
-            if (AssetLoader.getHighScore() < score) {
-                currentState = GameState.HISCORE;
-                AssetLoader.setHighScore((int) score);
-                Gdx.app.log("GameState ", "HISCORE");
-            } else {
-                currentState = GameState.GAMEOVER;
-                Gdx.app.log("GameState", "GAMEOVER");
-            }
+            currentState = GameState.DYING;
         }
 
         for (int i = 0; i <= nAsteroids - 1; i++) {
