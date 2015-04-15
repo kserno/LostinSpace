@@ -209,6 +209,7 @@ public class GameWorld {
         nAsteroids = -1;
         spawnAsteroid = 0;
         score = 0;
+        dyingTime = 0;
         currentState = GameWorld.GameState.READY;
     }
 

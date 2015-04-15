@@ -127,7 +127,7 @@ public class HangarScreen implements Screen {
     }
 
     public void moveRight() {
-        if (nship== 2) nship =0; else nship++;
+        if (nship== 0) nship =2; else nship--;
     }
 
     public void changeShip() {
