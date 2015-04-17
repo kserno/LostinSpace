@@ -136,7 +136,7 @@ public class GameRenderer {
         if (updateEnergy) {
             batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
         }
-        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 6);
+        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 16);
         AssetLoader.font.draw(batcher, "Touch to resume", width/3, height/2);
         renderEnergyBar();
     }
@@ -146,7 +146,7 @@ public class GameRenderer {
         batcher.enableBlending();
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         renderEnergyBar();
-        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 6);
+        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 16);
         AssetLoader.font.draw(batcher, "Touch to start", width/3, height/2);
     }
 
@@ -195,7 +195,7 @@ public class GameRenderer {
             batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
         }
         renderEnergyBar();
-        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height/6);
+        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height/16);
         pause.draw(batcher);
     }
 
@@ -204,8 +204,8 @@ public class GameRenderer {
         drawBackground(true);
         batcher.enableBlending();
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
-        batcher.draw(explosionAnimation.getKeyFrame(myWorld.dyingTime), ship.getX(), ship.getY(), ship.getWidth() * 1.5f, ship.getHeight()*1.5f);
-        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 6);
+        batcher.draw(explosionAnimation.getKeyFrame(myWorld.dyingTime), ship.getX()- ship.getWidth() / 4, ship.getY(), ship.getWidth() * 1.5f, ship.getHeight()*1.5f);
+        AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 16);
 
     }
 

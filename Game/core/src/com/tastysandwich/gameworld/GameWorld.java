@@ -55,7 +55,7 @@ public class GameWorld {
         asteroids = new Asteroid[9];
         this.width = width;
         this.height = height;
-        ship = new Ship(width / 12, height / 3, width / 6, width / 6 / 3 * 2, this, height);
+        ship = new Ship(width / 12, height / 2 - width / 6 / 3, width / 6, width / 6 / 3 * 2, this, height);
         r = new Random();
         pauseButton = new Rectangle(width - width / 10, height/20, width/10, height/10 + height/20);
         ibTryAgain = new ImageButton(AssetLoader.sdTryAgain);
@@ -173,6 +173,7 @@ public class GameWorld {
             }
         }
         if (!ship.getIsAlive()) {
+            AssetLoader.explosion.play();
             currentState = GameState.DYING;
         }
 

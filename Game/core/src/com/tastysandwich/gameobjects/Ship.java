@@ -26,7 +26,7 @@ public class Ship {
 
     private float originX, originY;
 
-    private int energy = 2;
+    private int energy = 0;
     private boolean shield = true;
 
     private Polygon boundingPolygon;
@@ -69,16 +69,30 @@ public class Ship {
 
         position.add(velocity.cpy().scl(delta));
 
-        if (originY > goToY-offset && originY < goToY+offset){
-            velocity.y = 0;
-        }else if(originY > goToY){
-            velocity.y = (-speed+currentRotation*2)*world.getGameSpeed();
-        }else if (originY < goToY){
-            velocity.y = (speed+currentRotation*2)*world.getGameSpeed();
+        if(world.currentState != GameWorld.GameState.DYING) {
+            if (originY > goToY - offset && originY < goToY + offset) {
+                velocity.y = 0;
+            } else if (originY > goToY) {
+                velocity.y = (-speed + currentRotation * 2) * world.getGameSpeed();
+            } else if (originY < goToY) {
+                velocity.y = (speed + currentRotation * 2) * world.getGameSpeed();
+            }
+        }else {
+            if (originY > goToY - offset && originY < goToY + offset) {
+                velocity.y = 5;
+            } else if (originY > goToY) {
+                velocity.y = (speed / 2 + currentRotation * 2) * world.getGameSpeed();
+            } else if (originY < goToY) {
+                velocity.y = (-speed / 2 + currentRotation * 2) * world.getGameSpeed();
+            }
         }
-
-        prepona = (float) Math.sqrt(((goToX - originX)*(goToX - originX)) + ((originY - goToY)*(originY - goToY)));
-        destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona))*-1;
+        if(world.currentState != GameWorld.GameState.DYING) {
+            prepona = (float) Math.sqrt(((goToX - originX) * (goToX - originX)) + ((originY - goToY) * (originY - goToY)));
+            destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona)) * -1;
+        }else {
+            prepona = (float) Math.sqrt(((goToX - originX) * (goToX - originX)) + ((originY - goToY) * (originY - goToY)));
+            destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona));
+        }
         rotationChange(delta);
 
         boundingPolygon.setPosition(originX, originY);
@@ -162,10 +176,10 @@ public class Ship {
         isAlive = true;
         position.set(sx, sy);
         velocity.set(0,0);
-        goToY = (int) ((int) position.y+this.height/2+100);
+        goToY = (int) ((int) position.y+this.height/2);
         goToX = (int) position.x;
         shield = true;
-        energy = 2;
+        energy = 0;
     }
 
     public int getCurrentEnergy() {

@@ -1,7 +1,12 @@
 package com.tastysandwich.helpers;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.audio.AudioRecorder;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -50,6 +55,10 @@ public class AssetLoader {
 
     public static Sprite[] hangarShips;
 
+    /////////////////////////////////////////SOUNDS///////////////////////////////////////////////
+
+    public static Sound explosion;
+
 
 
 
@@ -70,6 +79,11 @@ public class AssetLoader {
         loadButtons(width, height);
         loadGameAssets(width, height);
         loadBackgrounds(width, height);
+        loadSounds();
+    }
+
+    private static void loadSounds() {
+        explosion = Gdx.audio.newSound(Gdx.files.internal("data/audio/explosion.mp3"));
     }
 
     private static void loadFont(int width) {
@@ -309,5 +323,6 @@ public class AssetLoader {
 
     public static void dispose() {
         font.dispose();
+        explosion.dispose();
     }
 }
