@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.tastysandwich.game.AdsController;
 import com.tastysandwich.game.MainClass;
 import com.tastysandwich.helpers.AssetLoader;
 
@@ -43,7 +44,7 @@ public class Menu implements Screen {
     private String score;
     private float scoreWidth, scoreHeight;
 
-    public Menu(final float width, final float height, final MainClass game) {
+    public Menu(final float width, final float height, final MainClass game, final AdsController adsController) {
         this.width = width;
         this.height = height;
         cam = new OrthographicCamera();
@@ -72,7 +73,7 @@ public class Menu implements Screen {
         Play.setPosition(width / 2 - width / 4 / 2, height / 6); //** Button location **//
         Play.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(width, height));//** Usually used to start Game, etc. **//
+                game.setScreen(new GameScreen(width, height, adsController));//** Usually used to start Game, etc. **//
                 return true;
             }});
 
@@ -80,7 +81,7 @@ public class Menu implements Screen {
         Hangar.setPosition(width / 2 - width / 4 / 2,height / 12 * 5);
         Hangar.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new HangarScreen(width,height, game));
+                game.setScreen(new HangarScreen(width,height, game, adsController));
                 return true;
             }
         });

@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.tastysandwich.game.AdsController;
 import com.tastysandwich.gameobjects.Asteroid;
 import com.tastysandwich.gameobjects.Ship;
 import com.tastysandwich.gameobjects.Energy;
@@ -40,6 +41,8 @@ public class GameWorld {
     private Rectangle tryAgainRect;
     private Rectangle pauseButton;
 
+    private AdsController adsController;
+
     public void start() {
         currentState = GameState.RUNNING;
     }
@@ -49,12 +52,13 @@ public class GameWorld {
         READY, RUNNING, GAMEOVER, HISCORE, PAUSE, DYING
     }
 
-    public GameWorld(float width, float height) {
+    public GameWorld(float width, float height, AdsController adsController) {
         currentState = GameState.READY;
         Gdx.app.log("GameState", "READY");
         asteroids = new Asteroid[9];
         this.width = width;
         this.height = height;
+        this.adsController = adsController;
         ship = new Ship(width / 12, height / 2 - width / 6 / 3, width / 6, width / 6 / 3 * 2, this, height);
         r = new Random();
         pauseButton = new Rectangle(width - width / 10, height/20, width/10, height/10 + height/20);
@@ -91,6 +95,8 @@ public class GameWorld {
         dyingTime += delta;
         ship.update(delta);
         if(dyingTime > 1) {
+
+            if(adsController.isInternetConnected()) {adsController.showBannerAd();}
             if (AssetLoader.getHighScore() < score) {
                 currentState = GameState.HISCORE;
                 AssetLoader.setHighScore((int) score);
@@ -103,14 +109,12 @@ public class GameWorld {
     }
 
     private void updatePause() {
-        // do nothing
     }
 
     private void updateHiScore() {
     }
 
     private void updateGameOver() {
-
     }
 
     private void updateReady(float delta) {
@@ -201,6 +205,7 @@ public class GameWorld {
     }
 
     public void tryAgain() {
+        adsController.hideBannerAd();
         ship.restart();
         energy = null;
         eIsActive = false;

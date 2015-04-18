@@ -31,16 +31,17 @@ public class AssetLoader {
     public static Animation energyAnimation;
     public static Animation explosionAnimation;
 
-    public static Texture scorebg, highscorebg;
-    public static TextureRegion tscorebg, thighscorebg;
+    public static Sprite scorebg, highscorebg;
 
     private static Preferences prefs;
 
     public static BitmapFont font;
 
-    public static Texture[] energyBar;
+    public static Sprite[] energyBar;
 
-    public static Sprite pause;
+    public static Sprite pause, pauseScreen, startScreen;
+
+    public static Sprite shieldOn, shieldOff;
 
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
     public static Sprite sMenuBackground, hangarBackground;
@@ -168,18 +169,32 @@ public class AssetLoader {
         loadEnergy();
         loadExplosion();
         loadEnergyBar(width, height);
-        loadGOTables();
+        loadGOTables(width, height);
         loadHangarShips(width, height);
         loadPause(width, height);
+        loadShield(width, height);
+    }
+
+    private static void loadShield(int width, int height) {
+        shieldOff = new Sprite(new Texture(Gdx.files.internal("data/energybar/a.jpg")));
+        shieldOff.setPosition((width / 4) * 3 - width / 15, height - width / 15);
+        shieldOff.setSize(width / 15, width / 15);
+        shieldOff.flip(false, true);
+
+        shieldOn = new Sprite(new Texture(Gdx.files.internal("data/energybar/b.jpg")));
+        shieldOn.setPosition((width / 4) * 3 - width / 15, height - width / 15);
+        shieldOn.setSize(width / 15, width / 15);
+        shieldOn.flip(false, true);
+
     }
 
     private static void loadHangarShips(int width, int height) {
         hangarShips = new Sprite[6];
         for(int i=0; i<6; i++) {
             if (i==2 && getTotalEnergy() < 500) {
-                hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/lockedship2.png")));
+                hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/lockedship.png")));
                 hangarShip.setSize(width / 6 * 4, height / 6 * 4);
-                hangarShip.setPosition(width / 4, height / 8);
+                hangarShip.setPosition(width / 6, height / 8);
                 hangarShip.flip(false, true);
             } else {
                 hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/" + (i+ 1) + ".png")));
@@ -192,27 +207,43 @@ public class AssetLoader {
     }
 
     private static void loadEnergyBar(int width, int height) {
-        energyBar = new Texture[11];
+        energyBar = new Sprite[11];
         for (int i=0; i<=10; i++){
-            energyBar[i] = new Texture(Gdx.files.internal("data/energybar/" + i + ".png"));
+            energyBar[i] = new Sprite(new Texture(Gdx.files.internal("data/energybar/" + i + ".png")));
+            energyBar[i].setPosition((width / 4) * 3, (height / 18) * 17);
+            energyBar[i].setSize(width / 4, height/18);
         }
     }
 
-    private static void loadGOTables() {
+    private static void loadGOTables(int width, int height) {
         // BACKGROUND GAMEOVER
-        scorebg = new Texture(Gdx.files.internal("data/skins/score.png"));
-        tscorebg = new TextureRegion(scorebg);
-        tscorebg.flip(false, true);
+        scorebg = new Sprite(new Texture(Gdx.files.internal("data/skins/score.png")));
+        scorebg.setPosition(width /8, height/8);
+        scorebg.setSize(width-(width/8+width/8), height-(height/8+height/8));
+        scorebg.flip(false, true);
 
 
         // BACKGROUND HISCORE
-        highscorebg = new Texture(Gdx.files.internal("data/skins/newhighscore.png"));
-        thighscorebg = new TextureRegion(highscorebg);
-        thighscorebg.flip(false, true);
+        highscorebg = new Sprite(new Texture(Gdx.files.internal("data/skins/newhighscore.png")));
+        highscorebg.setPosition(width /8, height/8);
+        highscorebg.setSize(width-(width/8+width/8), height-(height/8+height/8));
+        highscorebg.flip(false, true);
     }
     private static void loadPause(int width, int height) {
-        pause = new Sprite(new Texture(Gdx.files.internal("data/pause.png")));
+        pause = new Sprite(new Texture(Gdx.files.internal("data/pause/pause.png")));
         pause.setSize(width/10, height/10 + height/20);
+
+        pauseScreen = new Sprite(new Texture(Gdx.files.internal("data/pause/pausescreen.png")));
+        pauseScreen.setSize(width, height);
+        pauseScreen.setPosition(0,0);
+        pauseScreen.flip(false, true);
+
+        startScreen = new Sprite(new Texture(Gdx.files.internal("data/pause/taptostart.png")));
+        startScreen.setSize(width, height);
+        startScreen.setPosition(0,0);
+        startScreen.flip(false, true);
+
+
     }
 
     private static void loadEnergy() {

@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.tastysandwich.game.AdsController;
 import com.tastysandwich.helpers.AssetLoader;
 import com.tastysandwich.game.MainClass;
 import com.tastysandwich.helpers.HangarInput;
@@ -42,10 +43,13 @@ public class HangarScreen implements Screen {
 
     private Rectangle menuButton, leftArrow, rightArrow;
 
-    public HangarScreen(final float width, final float height, final MainClass game) {
+    private AdsController adsController;
+
+    public HangarScreen(final float width, final float height, final MainClass game, AdsController adsController) {
         this.width = width;
         this.height = height;
         this.game = game;
+        this.adsController = adsController;
         cam = new OrthographicCamera();
         cam.setToOrtho(true, width, height);
 
@@ -119,7 +123,7 @@ public class HangarScreen implements Screen {
     public Rectangle getShipRect() { return hangarShips[nship].getBoundingRectangle(); }
 
     public void setScreen() {
-        game.setScreen(new Menu(width, height, game ));
+        game.setScreen(new Menu(width, height, game, adsController));
     }
 
     public void moveLeft() {

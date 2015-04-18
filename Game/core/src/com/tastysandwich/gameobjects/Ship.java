@@ -172,6 +172,8 @@ public class Ship {
         return isAlive;
     }
 
+    public boolean getShield() { return shield; }
+
     public void restart() {
         isAlive = true;
         position.set(sx, sy);
