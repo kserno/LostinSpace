@@ -3,6 +3,7 @@ package com.tastysandwich.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.tastysandwich.game.AdsController;
+import com.tastysandwich.game.MainClass;
 import com.tastysandwich.gameworld.GameRenderer;
 import com.tastysandwich.gameworld.GameWorld;
 import com.tastysandwich.helpers.InputHandler;
@@ -18,13 +19,13 @@ public class GameScreen implements Screen {
 
     private float width,height;
 
-    public GameScreen(float width, float height, AdsController adsController) {
+    public GameScreen(float width, float height, AdsController adsController, MainClass game) {
         Gdx.app.log("GameScreen", "Attached");
         this.width = width;
         this.height = height;
         world = new GameWorld(width, height, adsController);
         renderer = new GameRenderer(world, width, height);
-        Gdx.input.setInputProcessor(new InputHandler(world.getShip(), world));
+        Gdx.input.setInputProcessor(new InputHandler(world.getShip(), world, game));
     }
     @Override
     public void show() {

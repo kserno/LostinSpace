@@ -44,9 +44,12 @@ public class Menu implements Screen {
     private String score;
     private float scoreWidth, scoreHeight;
 
+    private Menu menu;
+
     public Menu(final float width, final float height, final MainClass game, final AdsController adsController) {
         this.width = width;
         this.height = height;
+        if(adsController.isInternetConnected()) {adsController.showBannerAd();}
         cam = new OrthographicCamera();
         cam.setToOrtho(true, width, height);
 
@@ -73,7 +76,8 @@ public class Menu implements Screen {
         Play.setPosition(width / 2 - width / 4 / 2, height / 6); //** Button location **//
         Play.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(width, height, adsController));//** Usually used to start Game, etc. **//
+                adsController.hideBannerAd();
+                game.setScreen(new GameScreen(width, height, adsController,game));//** Usually used to start Game, etc. **//
                 return true;
             }});
 

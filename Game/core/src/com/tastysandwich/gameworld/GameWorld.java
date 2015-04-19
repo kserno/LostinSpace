@@ -43,6 +43,9 @@ public class GameWorld {
 
     private AdsController adsController;
 
+    private ImageButton ibMenu;
+    private Rectangle menuRect;
+
     public void start() {
         currentState = GameState.RUNNING;
     }
@@ -63,8 +66,11 @@ public class GameWorld {
         r = new Random();
         pauseButton = new Rectangle(width - width / 10, height/20, width/10, height/10 + height/20);
         ibTryAgain = new ImageButton(AssetLoader.sdTryAgain);
-        ibTryAgain.setPosition(width / 2 - width / 5 / 2, height / 2);
-        tryAgainRect = new Rectangle(width / 2 - width / 5 / 2, height / 2, width / 5, height / 20 * 3);
+        ibTryAgain.setPosition(width / 3 *2-width/5/2,  height / 2);
+        tryAgainRect = new Rectangle(width / 3*2 -width/5/2 , height / 2, width / 5, height / 20 * 3);
+        ibMenu = new ImageButton(AssetLoader.sdMenu);
+        ibMenu.setPosition(width /3 -width/5/2, height/2);
+        menuRect = new Rectangle(width / 3 - width/5/2, height/2, width/5, height/20*3);
     }
 
     public void update(float delta, float runTime) {
@@ -109,6 +115,7 @@ public class GameWorld {
     }
 
     private void updatePause() {
+        if(adsController.isInternetConnected()) {adsController.showBannerAd();}
     }
 
     private void updateHiScore() {
@@ -268,8 +275,21 @@ public class GameWorld {
         return pauseButton;
     }
 
+    public Rectangle getMenuRect() {
+        return menuRect;
+    }
+
+    public ImageButton getIbMenu() {
+        return ibMenu;
+    }
+
     public void resume() {
+        adsController.hideBannerAd();
         currentState = GameState.RUNNING;
+    }
+
+    public AdsController getAdsController() {
+        return  adsController;
     }
 
 }

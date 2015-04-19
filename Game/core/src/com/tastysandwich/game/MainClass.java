@@ -20,7 +20,6 @@ public class MainClass extends Game{
         int width = Gdx.graphics.getWidth();
         AssetLoader.load(width, height);
         setScreen(new Menu(width, height, this, adsController));
-        Gdx.app.log("Screen","Width:" + Gdx.graphics.getWidth()+"Height:" + Gdx.graphics.getHeight());
     }
 
     @Override

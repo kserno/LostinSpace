@@ -51,7 +51,7 @@ public class GameRenderer {
     private Sprite pause, pauseScreen, startScreen;
     private Sprite shieldOff, shieldOn;
 
-    private ImageButton ibTryAgain;
+    private ImageButton ibTryAgain, ibMenu;
 
     private boolean updateEnergy = false;
 
@@ -84,6 +84,7 @@ public class GameRenderer {
         highscoreTable = AssetLoader.highscorebg;
         scoreTable = AssetLoader.scorebg;
         ibTryAgain = myWorld.getIbTryAgain();
+        ibMenu = myWorld.getIbMenu();
         energyBar = AssetLoader.energyBar;
         pause = AssetLoader.pause;
         pause.setPosition(width - width / 10, height/20);
@@ -220,6 +221,7 @@ public class GameRenderer {
         drawBackground(true);
         scoreTable.draw(batcher);
         ibTryAgain.draw(batcher, 50f);
+        ibMenu.draw(batcher, 50f);
         String score = myWorld.getScore() + "";
         AssetLoader.font.draw(batcher, ""+ myWorld.getScore(),width / 2 - AssetLoader.font.getBounds(score).width / 2, height/2 + height / 4);
     }
@@ -228,6 +230,7 @@ public class GameRenderer {
         drawBackground(true);
         highscoreTable.draw(batcher);
         ibTryAgain.draw(batcher, 50f);
+        ibMenu.draw(batcher, 50f);
         String score = myWorld.getScore() + "";
         AssetLoader.font.draw(batcher, ""+ myWorld.getScore(),width / 2 - AssetLoader.font.getBounds(score).width / 2, height/2 + height / 4);
     }

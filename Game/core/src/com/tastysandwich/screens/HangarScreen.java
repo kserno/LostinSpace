@@ -86,6 +86,7 @@ public class HangarScreen implements Screen {
             hangarShips[nship].draw(batcher);
         }
         batcher.end();
+
     }
 
     @Override
