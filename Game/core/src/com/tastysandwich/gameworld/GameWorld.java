@@ -115,7 +115,6 @@ public class GameWorld {
     }
 
     private void updatePause() {
-        if(adsController.isInternetConnected()) {adsController.showBannerAd();}
     }
 
     private void updateHiScore() {

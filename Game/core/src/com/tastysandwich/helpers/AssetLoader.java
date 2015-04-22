@@ -177,13 +177,13 @@ public class AssetLoader {
 
     private static void loadShield(int width, int height) {
         shieldOff = new Sprite(new Texture(Gdx.files.internal("data/energybar/a.jpg")));
-        shieldOff.setPosition((width / 4) * 3 - width / 15, height - width / 15);
-        shieldOff.setSize(width / 15, width / 15);
+        shieldOff.setPosition((width / 4) * 3 - height/18, height - height/18);
+        shieldOff.setSize(height/18, height/18);
         shieldOff.flip(false, true);
 
         shieldOn = new Sprite(new Texture(Gdx.files.internal("data/energybar/b.jpg")));
-        shieldOn.setPosition((width / 4) * 3 - width / 15, height - width / 15);
-        shieldOn.setSize(width / 15, width / 15);
+        shieldOn.setPosition((width / 4) * 3 - height/18, height - height/18);
+        shieldOn.setSize(height/18, height/18);
         shieldOn.flip(false, true);
 
     }

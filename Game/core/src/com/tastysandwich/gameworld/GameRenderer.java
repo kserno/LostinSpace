@@ -166,28 +166,33 @@ public class GameRenderer {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if(moving) {
-            if(offset < -width) offset = 0;
-            if(offset2 < -width) offset2 = 0;
-            if(offset3 < -width) offset3 = 0;
-            offset = offset - bgSpeed * Gdx.graphics.getDeltaTime() * myWorld.getGameSpeed();
-            offset2 = offset2 - bgSpeed2 * myWorld.getGameSpeed() * Gdx.graphics.getDeltaTime();
-            offset3 = offset3 - bgSpeed3 * myWorld.getGameSpeed() * Gdx.graphics.getDeltaTime();
+            if(background.getX()<0) background.setX(width);
+            if(stars1.getX()<0) stars1.setX(width);
+            if(stars2.getX()<0) stars2.setX(width);
+
+            offset =  bgSpeed * Gdx.graphics.getDeltaTime() * myWorld.getGameSpeed();
+            offset2 = bgSpeed2 * myWorld.getGameSpeed() * Gdx.graphics.getDeltaTime();
+            offset3 = bgSpeed3 * myWorld.getGameSpeed() * Gdx.graphics.getDeltaTime();
+        }else {
+            offset = 0;
+            offset2 = 0;
+            offset3 = 0;
         }
 
         batcher.begin();
-        background.setX(offset);
+        background.translateX(-width - offset);
         background.draw(batcher);
-        background.setX(offset + width);
+        background.translateX(width);
         background.draw(batcher);
 
-        stars1.setX(offset2);
+        stars1.translateX(-width - offset2);
         stars1.draw(batcher);
-        stars1.setX(offset2 + width);
+        stars1.translateX(width);
         stars1.draw(batcher);
 
-        stars2.setX(offset3);
+        stars2.translateX(-width - offset3);
         stars2.draw(batcher);
-        stars2.setX(offset3 + width);
+        stars2.translateX(width);
         stars2.draw(batcher);
     }
 

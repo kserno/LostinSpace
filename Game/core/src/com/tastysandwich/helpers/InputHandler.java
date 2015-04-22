@@ -51,7 +51,10 @@ public class InputHandler implements InputProcessor {
                 game.setScreen(new Menu(world.width, world.height,game, world.getAdsController()));
             }
         }
-        if (world.getCurrentState() == GameWorld.GameState.RUNNING && world.getPauseButton().contains((float) screenX, (float) screenY)) world.Pause();
+        if (world.getCurrentState() == GameWorld.GameState.RUNNING && world.getPauseButton().contains((float) screenX, (float) screenY)){
+            world.Pause();
+            if(world.getAdsController().isInternetConnected()) {world.getAdsController().showBannerAd();}
+        }
 
         return false;
     }
