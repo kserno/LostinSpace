@@ -36,15 +36,13 @@ public class GameWorld {
     public GameState currentState;
     private float gameSpeed = 1;
 
-    private ImageButton ibTryAgain;
-
     private Rectangle tryAgainRect;
     private Rectangle pauseButton;
+    private Rectangle menuRect;
 
     private AdsController adsController;
 
-    private ImageButton ibMenu;
-    private Rectangle menuRect;
+    public boolean shake = false;
 
     public void start() {
         currentState = GameState.RUNNING;
@@ -65,11 +63,7 @@ public class GameWorld {
         ship = new Ship(width / 12, height / 2 - width / 6 / 3, width / 6, width / 6 / 3 * 2, this, height);
         r = new Random();
         pauseButton = new Rectangle(width - width / 10, height/20, width/10, height/10 + height/20);
-        ibTryAgain = new ImageButton(AssetLoader.sdTryAgain);
-        ibTryAgain.setPosition(width / 3 *2-width/5/2,  height / 2);
         tryAgainRect = new Rectangle(width / 3*2 -width/5/2 , height / 2, width / 5, height / 20 * 3);
-        ibMenu = new ImageButton(AssetLoader.sdMenu);
-        ibMenu.setPosition(width /3 -width/5/2, height/2);
         menuRect = new Rectangle(width / 3 - width/5/2, height/2, width/5, height/20*3);
     }
 
@@ -178,12 +172,15 @@ public class GameWorld {
         for (int i = 0; i <= nAsteroids; i++) {
             if (asteroids[i].collides(ship)) {
                 Gdx.app.log("Ship", "Collided!");
+                shake = true;
                 ship.collide();
                 asteroids[i].restart();
             }
         }
         if (!ship.getIsAlive()) {
-            AssetLoader.explosion.play();
+            if(AssetLoader.getSounds()) {
+                AssetLoader.explosion.play();
+            }
             currentState = GameState.DYING;
         }
 
@@ -241,10 +238,6 @@ public class GameWorld {
         return asteroids;
     }
 
-    public ImageButton getIbTryAgain() {
-        return ibTryAgain;
-    }
-
     public Rectangle getTryAgainRect() {
         return tryAgainRect;
     }
@@ -276,10 +269,6 @@ public class GameWorld {
 
     public Rectangle getMenuRect() {
         return menuRect;
-    }
-
-    public ImageButton getIbMenu() {
-        return ibMenu;
     }
 
     public void resume() {

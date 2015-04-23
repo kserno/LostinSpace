@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         if (world.getCurrentState()!= GameWorld.GameState.PAUSE) runTime += delta;
         world.update(delta, runTime);
-        renderer.render(runTime);
+        renderer.render(runTime, delta);
     }
 
     @Override

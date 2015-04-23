@@ -56,9 +56,6 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
             @Override
             public void run() {
                 bannerAd.setVisibility(View.VISIBLE);
-                AdRequest.Builder builder = new AdRequest.Builder();
-                AdRequest ad = builder.build();
-                bannerAd.loadAd(ad);
             }
         });
     }
@@ -79,5 +76,17 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
         NetworkInfo mobile = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return (mobile != null && mobile.isConnected() || wifi != null && wifi.isConnected());
+    }
+
+    @Override
+    public void loadAd() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AdRequest.Builder builder = new AdRequest.Builder();
+                AdRequest ad = builder.build();
+                bannerAd.loadAd(ad);
+            }
+        });
     }
 }

@@ -66,7 +66,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if (world.getCurrentState() == GameWorld.GameState.RUNNING || world.getCurrentState() == GameWorld.GameState.DYING) {
+        if (world.getCurrentState() == GameWorld.GameState.RUNNING) {
             ship.onClick(screenX, screenY);
         }
         return false;

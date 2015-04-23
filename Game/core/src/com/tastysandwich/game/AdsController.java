@@ -7,4 +7,5 @@ public interface AdsController {
     public void showBannerAd();
     public void hideBannerAd();
     public boolean isInternetConnected();
+    public void loadAd();
 }

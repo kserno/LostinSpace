@@ -31,7 +31,7 @@ public class AssetLoader {
     public static Animation energyAnimation;
     public static Animation explosionAnimation;
 
-    public static Sprite scorebg, highscorebg;
+    public static Sprite scorebg;
 
     private static Preferences prefs;
 
@@ -46,7 +46,7 @@ public class AssetLoader {
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
     public static Sprite sMenuBackground, hangarBackground;
 
-    public static SpriteDrawable sdPlay,sdHangar,sdTryAgain, sdMenu, sdSoundsT, sdSoundsF;
+    public static SpriteDrawable sdPlay,sdHangar, sdSoundsT, sdSoundsF;
 
 
 
@@ -59,6 +59,8 @@ public class AssetLoader {
     /////////////////////////////////////////SOUNDS///////////////////////////////////////////////
 
     public static Sound explosion;
+
+    public static Music music;
 
 
 
@@ -76,6 +78,9 @@ public class AssetLoader {
         if (!prefs.contains("TotalEnergy")) {
             prefs.putInteger("TotalEnergy", 0);
         }
+        if (!prefs.contains("Sounds")) {
+            prefs.putBoolean("Sounds", true);
+        }
         loadFont(width);
         loadButtons(width, height);
         loadGameAssets(width, height);
@@ -85,6 +90,8 @@ public class AssetLoader {
 
     private static void loadSounds() {
         explosion = Gdx.audio.newSound(Gdx.files.internal("data/audio/explosion.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("data/audio/background_music.mp3"));
+        music.setLooping(true);
     }
 
     private static void loadFont(int width) {
@@ -119,30 +126,16 @@ public class AssetLoader {
         // BUTTON PLAY
         Texture texture = new Texture("data/skins/play.png");
         Sprite sprite = new Sprite(texture);
-        sprite.setSize(width / 4, height / 20 * 3);
+        sprite.setSize(width / 16 * 5, height / 20 * 3);
         sprite.flip(false, true);
         sdPlay = new SpriteDrawable(sprite);
 
         // BUTTON HANGAR
         texture = new Texture("data/skins/hangar.png");
         sprite = new Sprite(texture);
-        sprite.setSize(width / 4, height / 20 * 3);
+        sprite.setSize(width / 16 * 5, height / 20 * 3);
         sprite.flip(false,true);
         sdHangar = new SpriteDrawable(sprite);
-
-        //BUTTON MENU
-        texture = new Texture("data/skins/menu.png");
-        sprite = new Sprite(texture);
-        sprite.setSize(width / 5, height / 20 * 3);
-        sprite.flip(false,true);
-        sdMenu = new SpriteDrawable(sprite);
-
-        //BUTTON TRY AGAIN
-        texture = new Texture("data/skins/try-again.png");
-        sprite = new Sprite(texture);
-        sprite.setSize(width / 5, height / 20 * 3);
-        sprite.flip(false,true);
-        sdTryAgain = new SpriteDrawable(sprite);
 
         //BUTTON SOUNDS TRUE
         texture = new Texture("data/soundsT.png");
@@ -154,7 +147,7 @@ public class AssetLoader {
         //BUTTON SOUNDS FALSE
         texture = new Texture("data/soundsF.png");
         sprite = new Sprite(texture);
-        sprite.setSize(width/12, width/12);
+        sprite.setSize(width/14, width/14);
         sprite.flip(false,true);
         sdSoundsF = new SpriteDrawable(sprite);
 
@@ -177,12 +170,12 @@ public class AssetLoader {
 
     private static void loadShield(int width, int height) {
         shieldOff = new Sprite(new Texture(Gdx.files.internal("data/energybar/a.jpg")));
-        shieldOff.setPosition((width / 4) * 3 - height/18, height - height/18);
+        shieldOff.setPosition((width / 4) * 3 - height/16, height - height/18);
         shieldOff.setSize(height/18, height/18);
         shieldOff.flip(false, true);
 
         shieldOn = new Sprite(new Texture(Gdx.files.internal("data/energybar/b.jpg")));
-        shieldOn.setPosition((width / 4) * 3 - height/18, height - height/18);
+        shieldOn.setPosition((width / 4) * 3 - height/16, height - height/18);
         shieldOn.setSize(height/18, height/18);
         shieldOn.flip(false, true);
 
@@ -221,13 +214,6 @@ public class AssetLoader {
         scorebg.setPosition(width /8, height/8);
         scorebg.setSize(width-(width/8+width/8), height-(height/8+height/8));
         scorebg.flip(false, true);
-
-
-        // BACKGROUND HISCORE
-        highscorebg = new Sprite(new Texture(Gdx.files.internal("data/skins/newhighscore.png")));
-        highscorebg.setPosition(width /8, height/8);
-        highscorebg.setSize(width-(width/8+width/8), height-(height/8+height/8));
-        highscorebg.flip(false, true);
     }
     private static void loadPause(int width, int height) {
         pause = new Sprite(new Texture(Gdx.files.internal("data/pause/pause.png")));
@@ -352,8 +338,19 @@ public class AssetLoader {
         return prefs.getInteger("TotalEnergy");
     }
 
+
+    public static void setSounds(boolean val) {
+        prefs.putBoolean("Sounds", val);
+        prefs.flush();
+    }
+
+    public static boolean getSounds() {
+        return prefs.getBoolean("Sounds");
+    }
+
     public static void dispose() {
         font.dispose();
         explosion.dispose();
+        music.dispose();
     }
 }

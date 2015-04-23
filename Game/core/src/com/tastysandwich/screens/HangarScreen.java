@@ -50,6 +50,7 @@ public class HangarScreen implements Screen {
         this.height = height;
         this.game = game;
         this.adsController = adsController;
+        if(adsController.isInternetConnected()) {adsController.showBannerAd();}
         cam = new OrthographicCamera();
         cam.setToOrtho(true, width, height);
 

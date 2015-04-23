@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.tastysandwich.gameworld.GameWorld;
 
+import java.util.Random;
+
 /**
  * Created by solit_000 on 6.2.2015.
  */
@@ -149,6 +151,8 @@ public class Ship {
     }
 
     public void die() {
+        Random r = new Random();
+        velocity.y = r.nextInt((int) (speed * 2)) - speed;
         isAlive = false;
         Gdx.app.log("Ship","Died");
 

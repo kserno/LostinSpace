@@ -23,6 +23,8 @@ import com.tastysandwich.gameobjects.Energy;
 import com.tastysandwich.helpers.AssetLoader;
 import com.tastysandwich.helpers.InputHandler;
 
+import java.util.Random;
+
 import javax.swing.plaf.TextUI;
 
 /**
@@ -46,14 +48,21 @@ public class GameRenderer {
     private Ship ship;
     private Energy energy;
     private Texture textAsteroids[];
-    private Sprite scoreTable, highscoreTable;
+    private Sprite scoreTable;
     private Sprite[] energyBar;
     private Sprite pause, pauseScreen, startScreen;
     private Sprite shieldOff, shieldOn;
 
-    private ImageButton ibTryAgain, ibMenu;
-
     private boolean updateEnergy = false;
+
+
+    //Rumble
+    public float time;
+    Random random;
+    float x, y;
+    float current_time;
+    float power;
+    float current_power;
 
     public GameRenderer(GameWorld world, float width, float height) {
         myWorld = world;
@@ -62,6 +71,13 @@ public class GameRenderer {
         bgSpeed = width / 10;
         bgSpeed2 = width / 8;
         bgSpeed3 = width / 6;
+
+        /*time = 2;
+        current_time = 0;
+        power = 100;
+        current_power = 0;
+        random = new Random();*/
+
         cam = new OrthographicCamera();
         cam.setToOrtho(true,width,height);
         cam.position.set(width/2f, height/2f, 0);
@@ -81,10 +97,7 @@ public class GameRenderer {
         textAsteroids = AssetLoader.asteroids;
         explosionAnimation = AssetLoader.explosionAnimation;
         energyAnimation = AssetLoader.energyAnimation;
-        highscoreTable = AssetLoader.highscorebg;
         scoreTable = AssetLoader.scorebg;
-        ibTryAgain = myWorld.getIbTryAgain();
-        ibMenu = myWorld.getIbMenu();
         energyBar = AssetLoader.energyBar;
         pause = AssetLoader.pause;
         pause.setPosition(width - width / 10, height/20);
@@ -97,7 +110,7 @@ public class GameRenderer {
         ship = myWorld.getShip();
     }
 
-    public void render(float runTime) {
+    public void render(float runTime, float delta) {
         if (!myWorld.geteIsActive()) {
             energy = null;
             updateEnergy = false;
@@ -110,7 +123,7 @@ public class GameRenderer {
 
         switch (myWorld.getCurrentState()) {
             case RUNNING:
-                renderRunning(runTime);
+                renderRunning(runTime, delta);
                 break;
             case GAMEOVER:
                 renderGameOver();
@@ -196,7 +209,7 @@ public class GameRenderer {
         stars2.draw(batcher);
     }
 
-    private void renderRunning(float runTime) {
+    private void renderRunning(float runTime, float delta) {
         drawBackground(true);
         batcher.enableBlending();
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
@@ -210,6 +223,7 @@ public class GameRenderer {
         renderEnergyBar();
         AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height/16);
         pause.draw(batcher);
+        /*if(myWorld.shake){ tick(delta); }*/
     }
 
 
@@ -225,19 +239,36 @@ public class GameRenderer {
     private void renderGameOver() {
         drawBackground(true);
         scoreTable.draw(batcher);
-        ibTryAgain.draw(batcher, 50f);
-        ibMenu.draw(batcher, 50f);
         String score = myWorld.getScore() + "";
-        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(),width / 2 - AssetLoader.font.getBounds(score).width / 2, height/2 + height / 4);
+        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(),width / 2 - AssetLoader.font.getBounds(score).width / 2, height/2 + height / 40 * 9);
     }
 
     private void renderHiScore() {
         drawBackground(true);
-        highscoreTable.draw(batcher);
-        ibTryAgain.draw(batcher, 50f);
-        ibMenu.draw(batcher, 50f);
+        scoreTable.draw(batcher);
         String score = myWorld.getScore() + "";
-        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(),width / 2 - AssetLoader.font.getBounds(score).width / 2, height/2 + height / 4);
+        AssetLoader.font.draw(batcher, ""+ myWorld.getScore(),width / 2 - AssetLoader.font.getBounds(score).width / 2, height/2 + height / 40 * 9);
     }
+    /*
+    private void tick(float delta){
+        if(current_time <= time) {
+            current_power = power * ((time - current_time) / time);
+            // generate random new x and y values taking into account
+            // how much force was passed in
+            x = (random.nextFloat() - 0.5f) * 2 * current_power;
+            y = (random.nextFloat() - 0.5f) * 2 * current_power;
+
+            // Set the camera to this new x/y position
+            cam.translate(-x, -y);
+            current_time += delta;
+        } else {
+            // When the shaking is over move the camera back to the hero position
+            cam.position.x = 0;
+            cam.position.y = 0;
+            myWorld.shake = false;
+            current_power = 0;
+            current_time = 0;
+        }
+    }*/
 
 }

@@ -35,7 +35,7 @@ public class Menu implements Screen {
     private ImageButton Hangar;
     private ImageButton Sounds;
 
-    private boolean playSounds = true;
+    private boolean playSounds;
 
     private SpriteDrawable imgbPlay,imgbHangar, imgbSoundsT, imgbSoundsF;
 
@@ -44,14 +44,19 @@ public class Menu implements Screen {
     private String score;
     private float scoreWidth, scoreHeight;
 
-    private Menu menu;
-
     public Menu(final float width, final float height, final MainClass game, final AdsController adsController) {
         this.width = width;
         this.height = height;
-        if(adsController.isInternetConnected()) {adsController.showBannerAd();}
+        if(adsController.isInternetConnected()) adsController.loadAd();
+        adsController.hideBannerAd();
         cam = new OrthographicCamera();
         cam.setToOrtho(true, width, height);
+
+        playSounds = AssetLoader.getSounds();
+
+        if(playSounds){
+            AssetLoader.music.play();
+        }
 
         batcher = new SpriteBatch();
         // Attach batcher to camera
@@ -73,7 +78,7 @@ public class Menu implements Screen {
         imgbSoundsF = AssetLoader.sdSoundsF;
 
         Play = new ImageButton(imgbPlay); //** Button text and style **//
-        Play.setPosition(width / 2 - width / 4 / 2, height / 6); //** Button location **//
+        Play.setPosition(width / 2 - width / 16 * 5 / 2, height / 6); //** Button location **//
         Play.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 adsController.hideBannerAd();
@@ -82,23 +87,30 @@ public class Menu implements Screen {
             }});
 
         Hangar = new ImageButton(imgbHangar);
-        Hangar.setPosition(width / 2 - width / 4 / 2,height / 12 * 5);
+        Hangar.setPosition(width / 2 - width / 16 * 5 / 2,height / 12 * 5);
         Hangar.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 game.setScreen(new HangarScreen(width,height, game, adsController));
                 return true;
             }
         });
-
-        Sounds = new ImageButton(new ImageButton.ImageButtonStyle(imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT)); //** Button text and style **//
+        if(playSounds){
+            Sounds = new ImageButton(imgbSoundsT);
+        }else {
+            Sounds = new ImageButton(imgbSoundsF);
+        }
         Sounds.setPosition(width - width / 11, width / 11 - width / 14); //** Button location **//
         Sounds.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(playSounds) {
                     playSounds = false;
+                    AssetLoader.setSounds(playSounds);
+                    AssetLoader.music.stop();
                     Sounds.setStyle(new ImageButton.ImageButtonStyle(imgbSoundsF, imgbSoundsF, imgbSoundsF, imgbSoundsF, imgbSoundsF, imgbSoundsF));
                 }else {
                     playSounds = true;
+                    AssetLoader.setSounds(playSounds);
+                    AssetLoader.music.play();
                     Sounds.setStyle(new ImageButton.ImageButtonStyle(imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT));
                 }
                 return true;
