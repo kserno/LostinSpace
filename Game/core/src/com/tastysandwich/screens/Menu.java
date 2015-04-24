@@ -55,7 +55,6 @@ public class Menu implements Screen {
         this.manager = manager;
         this.width = width;
         this.height = height;
-        if(adsController.isInternetConnected()) adsController.loadAd();
         adsController.hideBannerAd();
         cam = new OrthographicCamera();
         cam.setToOrtho(true, width, height);
@@ -89,8 +88,7 @@ public class Menu implements Screen {
         Play.setPosition(width / 2 - width / 16 * 5 / 2, height / 6);
         Play.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                adsController.hideBannerAd();
-                game.setScreen(new GameScreen(width, height, adsController, game, manager));
+                game.setScreen(new GameScreen(width, height, adsController, game, manager, music));
                 return true;
             }});
 

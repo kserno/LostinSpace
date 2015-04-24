@@ -1,6 +1,7 @@
 package com.tastysandwich.gameworld;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
@@ -45,6 +46,7 @@ public class GameWorld {
     private AssetManager manager;
     private Sound explosion;
     public boolean shake = false;
+    private Music music;
 
     public float cracksAlpha;
 
@@ -57,7 +59,8 @@ public class GameWorld {
         READY, RUNNING, GAMEOVER, HISCORE, PAUSE, DYING
     }
 
-    public GameWorld(float width, float height, AdsController adsController, AssetManager manager) {
+    public GameWorld(float width, float height, AdsController adsController, AssetManager manager, Music music) {
+        this.music = music;
         currentState = GameState.READY;
         this.manager = manager;
         cracksAlpha = 0f;
@@ -238,6 +241,7 @@ public class GameWorld {
 
     public void Pause() {
         currentState = GameState.PAUSE;
+        if (music.isPlaying()) music.pause();
     }
 
     public Asteroid[] getAsteroids() {
@@ -280,6 +284,7 @@ public class GameWorld {
     public void resume() {
         adsController.hideBannerAd();
         currentState = GameState.RUNNING;
+        music.play();
     }
 
     public AdsController getAdsController() {

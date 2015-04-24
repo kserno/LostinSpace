@@ -27,7 +27,9 @@ public class MainClass extends Game{
         int height = Gdx.graphics.getHeight();
         int width = Gdx.graphics.getWidth();
         AssetLoader.load(width, height);
+        if(adsController.isInternetConnected()) adsController.loadAd();
         setScreen(new Menu(width, height, this, adsController, manager));
+
     }
 
     @Override
