@@ -1,10 +1,7 @@
 package com.tastysandwich.helpers;
 
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.audio.AudioDevice;
-import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -39,7 +36,7 @@ public class AssetLoader {
 
     public static Sprite[] energyBar;
 
-    public static Sprite pause, pauseScreen, startScreen;
+    public static Sprite pause, pauseScreen, startScreen, hit;
 
     public static Sprite shieldOn, shieldOff;
 
@@ -55,12 +52,6 @@ public class AssetLoader {
     public static Sprite hangarShip;
 
     public static Sprite[] hangarShips;
-
-    /////////////////////////////////////////SOUNDS///////////////////////////////////////////////
-
-    public static Sound explosion;
-
-    public static Music music;
 
 
 
@@ -85,13 +76,6 @@ public class AssetLoader {
         loadButtons(width, height);
         loadGameAssets(width, height);
         loadBackgrounds(width, height);
-        loadSounds();
-    }
-
-    private static void loadSounds() {
-        explosion = Gdx.audio.newSound(Gdx.files.internal("data/audio/explosion.mp3"));
-        music = Gdx.audio.newMusic(Gdx.files.internal("data/audio/background_music.mp3"));
-        music.setLooping(true);
     }
 
     private static void loadFont(int width) {
@@ -229,6 +213,12 @@ public class AssetLoader {
         startScreen.setPosition(0,0);
         startScreen.flip(false, true);
 
+        hit = new Sprite(new Texture(Gdx.files.internal("data/pause/praskliny.png")));
+        hit.setSize(width, height);
+        hit.setPosition(0,0);
+        hit.setAlpha(0);
+        hit.flip(false, true);
+
 
     }
 
@@ -350,7 +340,5 @@ public class AssetLoader {
 
     public static void dispose() {
         font.dispose();
-        explosion.dispose();
-        music.dispose();
     }
 }

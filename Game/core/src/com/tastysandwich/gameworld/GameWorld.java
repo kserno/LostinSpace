@@ -1,10 +1,10 @@
 package com.tastysandwich.gameworld;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.tastysandwich.game.AdsController;
 import com.tastysandwich.gameobjects.Asteroid;
 import com.tastysandwich.gameobjects.Ship;
@@ -42,7 +42,11 @@ public class GameWorld {
 
     private AdsController adsController;
 
+    private AssetManager manager;
+    private Sound explosion;
     public boolean shake = false;
+
+    public float cracksAlpha;
 
     public void start() {
         currentState = GameState.RUNNING;
@@ -53,9 +57,11 @@ public class GameWorld {
         READY, RUNNING, GAMEOVER, HISCORE, PAUSE, DYING
     }
 
-    public GameWorld(float width, float height, AdsController adsController) {
+    public GameWorld(float width, float height, AdsController adsController, AssetManager manager) {
         currentState = GameState.READY;
-        Gdx.app.log("GameState", "READY");
+        this.manager = manager;
+        cracksAlpha = 0f;
+        explosion = manager.get("data/audio/explosion.mp3", Sound.class);
         asteroids = new Asteroid[9];
         this.width = width;
         this.height = height;
@@ -100,10 +106,8 @@ public class GameWorld {
             if (AssetLoader.getHighScore() < score) {
                 currentState = GameState.HISCORE;
                 AssetLoader.setHighScore((int) score);
-                Gdx.app.log("GameState ", "HISCORE");
             } else {
                 currentState = GameState.GAMEOVER;
-                Gdx.app.log("GameState", "GAMEOVER");
             }
         }
     }
@@ -123,6 +127,9 @@ public class GameWorld {
 
     private void updateRunning(float delta, float runTime) {
         ship.update(delta);
+        if(cracksAlpha>0){
+            cracksAlpha -= delta / 2;
+        }
         for (int i = 0; i <= nAsteroids; i++) {
             asteroids[i].update(delta);
         }
@@ -145,7 +152,6 @@ public class GameWorld {
             asteroids[nAsteroids + 1] = new Asteroid(width, (float) r.nextInt((int) height), r.nextInt(200) - 100, this);
             nAsteroids++;
             spawnAsteroid = 0;
-            Gdx.app.log("Asteroid", String.valueOf(nAsteroids));
         }
         if (ship.getIsAlive()) {
             score += delta * gameSpeed;
@@ -165,13 +171,12 @@ public class GameWorld {
         if (eIsActive && energy.collides(ship)) {
             ship.addEnergy();
             AssetLoader.setTotalEnergy(AssetLoader.getTotalEnergy() + 1);
-            Gdx.app.log("totale", String.valueOf(AssetLoader.getTotalEnergy()));
             energy = null;
             eIsActive = false;
         }
         for (int i = 0; i <= nAsteroids; i++) {
             if (asteroids[i].collides(ship)) {
-                Gdx.app.log("Ship", "Collided!");
+                cracksAlpha = 1f;
                 shake = true;
                 ship.collide();
                 asteroids[i].restart();
@@ -179,7 +184,7 @@ public class GameWorld {
         }
         if (!ship.getIsAlive()) {
             if(AssetLoader.getSounds()) {
-                AssetLoader.explosion.play();
+                explosion.play();
             }
             currentState = GameState.DYING;
         }
@@ -187,7 +192,6 @@ public class GameWorld {
         for (int i = 0; i <= nAsteroids - 1; i++) {
             for (int i2 = i + 1; i2 <= nAsteroids; i2++) {
                 if (collidesA(asteroids[i].getBoundingPolygon(), asteroids[i2].getBoundingPolygon())) {
-                    Gdx.app.log("Asteroid", "Collided");
                     if (asteroids[i].getX() > asteroids[i2].getX()) {
                         float stolenSpeed = asteroids[i].velocity.x / 16;
                         asteroids[i].velocity.x = stolenSpeed * 15;
@@ -219,6 +223,8 @@ public class GameWorld {
         spawnAsteroid = 0;
         score = 0;
         dyingTime = 0;
+        cracksAlpha = 0f;
+        shake = false;
         currentState = GameWorld.GameState.READY;
     }
 

@@ -2,7 +2,10 @@ package com.tastysandwich.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -44,7 +47,12 @@ public class Menu implements Screen {
     private String score;
     private float scoreWidth, scoreHeight;
 
-    public Menu(final float width, final float height, final MainClass game, final AdsController adsController) {
+    private Music music;
+
+    private AssetManager manager;
+
+    public Menu(final float width, final float height, final MainClass game, final AdsController adsController, final AssetManager manager) {
+        this.manager = manager;
         this.width = width;
         this.height = height;
         if(adsController.isInternetConnected()) adsController.loadAd();
@@ -53,13 +61,13 @@ public class Menu implements Screen {
         cam.setToOrtho(true, width, height);
 
         playSounds = AssetLoader.getSounds();
-
+        music = manager.get("data/audio/background_music.mp3", Music.class);
+        music.setLooping(true);
         if(playSounds){
-            AssetLoader.music.play();
+            music.play();
         }
 
         batcher = new SpriteBatch();
-        // Attach batcher to camera
         batcher.setProjectionMatrix(cam.combined);
 
         score = String.valueOf(AssetLoader.getHighScore());
@@ -68,7 +76,7 @@ public class Menu implements Screen {
         scoreHeight = AssetLoader.font.getBounds(score).height;
 
         stage = new Stage(new ScreenViewport(cam));
-        Gdx.input.setInputProcessor(stage); //** stage is responsive **//
+        Gdx.input.setInputProcessor(stage);
         stage.clear();
 
         menuBackground = AssetLoader.sMenuBackground;
@@ -77,12 +85,12 @@ public class Menu implements Screen {
         imgbSoundsT = AssetLoader.sdSoundsT;
         imgbSoundsF = AssetLoader.sdSoundsF;
 
-        Play = new ImageButton(imgbPlay); //** Button text and style **//
-        Play.setPosition(width / 2 - width / 16 * 5 / 2, height / 6); //** Button location **//
+        Play = new ImageButton(imgbPlay);
+        Play.setPosition(width / 2 - width / 16 * 5 / 2, height / 6);
         Play.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 adsController.hideBannerAd();
-                game.setScreen(new GameScreen(width, height, adsController,game));//** Usually used to start Game, etc. **//
+                game.setScreen(new GameScreen(width, height, adsController, game, manager));
                 return true;
             }});
 
@@ -90,7 +98,7 @@ public class Menu implements Screen {
         Hangar.setPosition(width / 2 - width / 16 * 5 / 2,height / 12 * 5);
         Hangar.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new HangarScreen(width,height, game, adsController));
+                game.setScreen(new HangarScreen(width,height, game, adsController, manager));
                 return true;
             }
         });
@@ -99,18 +107,18 @@ public class Menu implements Screen {
         }else {
             Sounds = new ImageButton(imgbSoundsF);
         }
-        Sounds.setPosition(width - width / 11, width / 11 - width / 14); //** Button location **//
+        Sounds.setPosition(width - width / 11, width / 11 - width / 14);
         Sounds.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(playSounds) {
                     playSounds = false;
                     AssetLoader.setSounds(playSounds);
-                    AssetLoader.music.stop();
+                    music.stop();
                     Sounds.setStyle(new ImageButton.ImageButtonStyle(imgbSoundsF, imgbSoundsF, imgbSoundsF, imgbSoundsF, imgbSoundsF, imgbSoundsF));
                 }else {
                     playSounds = true;
                     AssetLoader.setSounds(playSounds);
-                    AssetLoader.music.play();
+                    music.play();
                     Sounds.setStyle(new ImageButton.ImageButtonStyle(imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT));
                 }
                 return true;
@@ -133,6 +141,8 @@ public class Menu implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batcher.begin();
         menuBackground.draw(batcher);
         batcher.enableBlending();

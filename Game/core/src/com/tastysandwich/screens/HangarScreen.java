@@ -2,6 +2,7 @@ package com.tastysandwich.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -45,7 +46,10 @@ public class HangarScreen implements Screen {
 
     private AdsController adsController;
 
-    public HangarScreen(final float width, final float height, final MainClass game, AdsController adsController) {
+    private AssetManager manager;
+
+    public HangarScreen(final float width, final float height, final MainClass game, AdsController adsController, AssetManager manager) {
+        this.manager = manager;
         this.width = width;
         this.height = height;
         this.game = game;
@@ -125,7 +129,7 @@ public class HangarScreen implements Screen {
     public Rectangle getShipRect() { return hangarShips[nship].getBoundingRectangle(); }
 
     public void setScreen() {
-        game.setScreen(new Menu(width, height, game, adsController));
+        game.setScreen(new Menu(width, height, game, adsController, manager));
     }
 
     public void moveLeft() {

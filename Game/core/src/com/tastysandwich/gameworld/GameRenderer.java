@@ -1,31 +1,17 @@
 package com.tastysandwich.gameworld;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.tastysandwich.gameobjects.Asteroid;
 import com.tastysandwich.gameobjects.Ship;
 import com.tastysandwich.gameobjects.Energy;
 import com.tastysandwich.helpers.AssetLoader;
-import com.tastysandwich.helpers.InputHandler;
 
 import java.util.Random;
-
-import javax.swing.plaf.TextUI;
 
 /**
  * Created by solit_000 on 5.2.2015.
@@ -50,19 +36,20 @@ public class GameRenderer {
     private Texture textAsteroids[];
     private Sprite scoreTable;
     private Sprite[] energyBar;
-    private Sprite pause, pauseScreen, startScreen;
+    private Sprite pause, pauseScreen, startScreen, hit;
     private Sprite shieldOff, shieldOn;
 
     private boolean updateEnergy = false;
 
 
     //Rumble
-    public float time;
-    Random random;
-    float x, y;
-    float current_time;
-    float power;
-    float current_power;
+    private float time;
+    private Random random;
+    private float rotate;
+    private float current_time;
+    private float power;
+    private float current_power;
+    private float rotation;
 
     public GameRenderer(GameWorld world, float width, float height) {
         myWorld = world;
@@ -72,11 +59,11 @@ public class GameRenderer {
         bgSpeed2 = width / 8;
         bgSpeed3 = width / 6;
 
-        /*time = 2;
+        time = 0.3f;
         current_time = 0;
-        power = 100;
+        power = 2;
         current_power = 0;
-        random = new Random();*/
+        random = new Random();
 
         cam = new OrthographicCamera();
         cam.setToOrtho(true,width,height);
@@ -103,6 +90,7 @@ public class GameRenderer {
         pause.setPosition(width - width / 10, height/20);
         pauseScreen = AssetLoader.pauseScreen;
         startScreen = AssetLoader.startScreen;
+        hit = AssetLoader.hit;
         shieldOff = AssetLoader.shieldOff;
         shieldOn = AssetLoader.shieldOn;
     }
@@ -111,6 +99,8 @@ public class GameRenderer {
     }
 
     public void render(float runTime, float delta) {
+        cam.update();
+        batcher.setProjectionMatrix(cam.combined);
         if (!myWorld.geteIsActive()) {
             energy = null;
             updateEnergy = false;
@@ -138,7 +128,7 @@ public class GameRenderer {
                 renderPause(runTime);
                 break;
             case DYING:
-                renderDying(runTime);
+                renderDying(runTime, delta);
         }
         batcher.end();
     }
@@ -155,6 +145,7 @@ public class GameRenderer {
         if (updateEnergy) {
             batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
         }
+        hit.draw(batcher);
         renderEnergyBar();
         AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 16);
         pauseScreen.draw(batcher);
@@ -220,20 +211,24 @@ public class GameRenderer {
         if (updateEnergy) {
             batcher.draw(energyAnimation.getKeyFrame(runTime), energy.getX(), energy.getY(), energy.getRadius()*2, energy.getRadius()*2);
         }
+        hit.setAlpha(myWorld.cracksAlpha);
+        hit.draw(batcher);
         renderEnergyBar();
         AssetLoader.font.draw(batcher, ""+ myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height/16);
         pause.draw(batcher);
-        /*if(myWorld.shake){ tick(delta); }*/
+        if(myWorld.shake){ tick(delta); }
     }
 
 
-    private void renderDying(float runTime) {
+    private void renderDying(float runTime, float delta) {
         drawBackground(true);
         batcher.enableBlending();
         batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         batcher.draw(explosionAnimation.getKeyFrame(myWorld.dyingTime), ship.getX()- ship.getWidth() / 4, ship.getY(), ship.getWidth() * 1.5f, ship.getHeight()*1.5f);
+        hit.setAlpha(myWorld.cracksAlpha);
+        hit.draw(batcher);
         AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 16);
-
+        if(myWorld.shake){ tick(delta); }
     }
 
     private void renderGameOver() {
@@ -249,26 +244,24 @@ public class GameRenderer {
         String score = myWorld.getScore() + "";
         AssetLoader.font.draw(batcher, ""+ myWorld.getScore(),width / 2 - AssetLoader.font.getBounds(score).width / 2, height/2 + height / 40 * 9);
     }
-    /*
     private void tick(float delta){
         if(current_time <= time) {
             current_power = power * ((time - current_time) / time);
-            // generate random new x and y values taking into account
-            // how much force was passed in
-            x = (random.nextFloat() - 0.5f) * 2 * current_power;
-            y = (random.nextFloat() - 0.5f) * 2 * current_power;
-
-            // Set the camera to this new x/y position
-            cam.translate(-x, -y);
+            if(rotate>=0) {
+                rotate = (random.nextFloat() - 1f) * 2 * current_power;
+            }else{
+                rotate = random.nextFloat() * 2 * current_power;
+            }
+            rotation += rotate;
+            cam.rotate(-rotate);
             current_time += delta;
         } else {
-            // When the shaking is over move the camera back to the hero position
-            cam.position.x = 0;
-            cam.position.y = 0;
+            cam.rotate(rotation);
+            rotation = 0;
             myWorld.shake = false;
             current_power = 0;
             current_time = 0;
         }
-    }*/
+    }
 
 }

@@ -145,7 +145,6 @@ public class Ship {
         if (energy==10 && !shield) {
             energy = 0;
             shield = true;
-            Gdx.app.log("Ship","Shield: true");
         }
 
     }
@@ -154,7 +153,6 @@ public class Ship {
         Random r = new Random();
         velocity.y = r.nextInt((int) (speed * 2)) - speed;
         isAlive = false;
-        Gdx.app.log("Ship","Died");
 
     }
 

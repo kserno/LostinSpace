@@ -1,6 +1,7 @@
 package com.tastysandwich.helpers;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.tastysandwich.game.MainClass;
 import com.tastysandwich.gameobjects.Ship;
 import com.tastysandwich.gameworld.GameWorld;
@@ -13,11 +14,13 @@ public class InputHandler implements InputProcessor {
     private Ship ship;
     private GameWorld world;
     private MainClass game;
+    private AssetManager manager;
 
-    public InputHandler(Ship ship, GameWorld world,MainClass game) {
+    public InputHandler(Ship ship, GameWorld world,MainClass game, AssetManager manager) {
         this.world = world;
         this.ship = ship;
         this.game = game;
+        this.manager = manager;
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -48,7 +51,7 @@ public class InputHandler implements InputProcessor {
             }
             if (world.getMenuRect().contains(screenX, screenY)) {
                 world.getAdsController().hideBannerAd();
-                game.setScreen(new Menu(world.width, world.height,game, world.getAdsController()));
+                game.setScreen(new Menu(world.width, world.height,game, world.getAdsController(), manager));
             }
         }
         if (world.getCurrentState() == GameWorld.GameState.RUNNING && world.getPauseButton().contains((float) screenX, (float) screenY)){
