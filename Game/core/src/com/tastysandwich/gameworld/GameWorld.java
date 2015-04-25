@@ -103,6 +103,9 @@ public class GameWorld {
     private void updateDying(float delta) {
         dyingTime += delta;
         ship.update(delta);
+        if(cracksAlpha>0){
+            cracksAlpha -= delta / 2;
+        }
         if(dyingTime > 1) {
 
             if(adsController.isInternetConnected()) {adsController.showBannerAd();}
