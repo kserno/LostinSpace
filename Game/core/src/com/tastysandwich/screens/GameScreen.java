@@ -19,10 +19,10 @@ public class GameScreen implements Screen {
     private GameRenderer renderer;
     private float runTime = 0;
 
-    public GameScreen(float width, float height, AdsController adsController, MainClass game, AssetManager manager, Music music) {
-        world = new GameWorld(width, height, adsController, manager,music);
+    public GameScreen(float width, float height, AdsController adsController, MainClass game, AssetManager manager, Music music, boolean clicking) {
+        world = new GameWorld(width, height, adsController, manager, music, clicking);
         renderer = new GameRenderer(world, width, height);
-        Gdx.input.setInputProcessor(new InputHandler(world.getShip(), world, game, manager));
+        Gdx.input.setInputProcessor(new InputHandler(world.getShip(), world, game, manager, clicking));
     }
     @Override
     public void show() {

@@ -37,6 +37,7 @@ public class Menu implements Screen {
     private ImageButton Play;
     private ImageButton Hangar;
     private ImageButton Sounds;
+    private ImageButton Dragging, Clicking;
 
     private boolean playSounds;
 
@@ -51,6 +52,8 @@ public class Menu implements Screen {
 
     private AssetManager manager;
 
+    private boolean play;
+
     public Menu(final float width, final float height, final MainClass game, final AdsController adsController, final AssetManager manager) {
         this.manager = manager;
         this.width = width;
@@ -58,6 +61,8 @@ public class Menu implements Screen {
         adsController.hideBannerAd();
         cam = new OrthographicCamera();
         cam.setToOrtho(true, width, height);
+
+        play = false;
 
         playSounds = AssetLoader.getSounds();
         music = manager.get("data/audio/background_music.mp3", Music.class);
@@ -84,11 +89,29 @@ public class Menu implements Screen {
         imgbSoundsT = AssetLoader.sdSoundsT;
         imgbSoundsF = AssetLoader.sdSoundsF;
 
+        Clicking = new ImageButton(imgbPlay);
+        Clicking.setPosition(width / 2 - width / 16 * 5, height / 24 * 7);
+        Clicking.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, true));
+                return true;
+            }});
+        Dragging = new ImageButton(imgbPlay);
+        Dragging.setPosition(width / 2, height / 24 * 7);
+        Dragging.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, false));
+                return true;
+            }});
+
         Play = new ImageButton(imgbPlay);
         Play.setPosition(width / 2 - width / 16 * 5 / 2, height / 6);
         Play.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(width, height, adsController, game, manager, music));
+                play=true;
+                Play.remove();
+                Hangar.remove();
+                table.add(Clicking, Dragging);
                 return true;
             }});
 
@@ -122,9 +145,7 @@ public class Menu implements Screen {
                 return true;
             }});
         stage.addActor(table);
-        table.add(Play);
-        table.add(Hangar);
-        table.add(Sounds);
+        table.add(Play, Hangar, Sounds);
     }
 
     
@@ -144,9 +165,14 @@ public class Menu implements Screen {
         batcher.begin();
         menuBackground.draw(batcher);
         batcher.enableBlending();
-        Play.draw(batcher, 50f);
-        Hangar.draw(batcher, 50f);
         Sounds.draw(batcher, 50f);
+        if(play) {
+            Clicking.draw(batcher, 50f);
+            Dragging.draw(batcher, 50f);
+        }else{
+            Play.draw(batcher, 50f);
+            Hangar.draw(batcher, 50f);
+        }
         AssetLoader.font.draw(batcher,score , width/2 - scoreWidth/2, height/20 * 15);
         batcher.end();
 

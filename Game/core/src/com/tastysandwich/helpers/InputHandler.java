@@ -15,12 +15,14 @@ public class InputHandler implements InputProcessor {
     private GameWorld world;
     private MainClass game;
     private AssetManager manager;
+    private boolean clicking;
 
-    public InputHandler(Ship ship, GameWorld world,MainClass game, AssetManager manager) {
+    public InputHandler(Ship ship, GameWorld world, MainClass game, AssetManager manager, boolean clicking) {
         this.world = world;
         this.ship = ship;
         this.game = game;
         this.manager = manager;
+        this.clicking = clicking;
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -58,6 +60,9 @@ public class InputHandler implements InputProcessor {
             world.Pause();
             if(world.getAdsController().isInternetConnected()) {world.getAdsController().showBannerAd();}
         }
+        if (world.getCurrentState() == GameWorld.GameState.RUNNING && clicking) {
+            ship.onClick(screenX, screenY);
+        }
 
         return false;
     }
@@ -69,8 +74,8 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if (world.getCurrentState() == GameWorld.GameState.RUNNING) {
-            ship.onClick(screenX, screenY);
+        if (world.getCurrentState() == GameWorld.GameState.RUNNING && clicking == false) {
+            ship.onDrag(screenX, screenY);
         }
         return false;
     }

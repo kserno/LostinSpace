@@ -18,7 +18,7 @@ import com.tastysandwich.game.MainClass;
 
 public class AndroidLauncher extends AndroidApplication implements AdsController {
 
-    private static final String BANNER_AD_UNIT_ID = "ca-app-pub-5609830916873471/9870540547";
+    private static final String BANNER_AD_UNIT_ID = "ca-app-pub-5609830916873471/7080244143";
 
     AdView bannerAd;
 	@Override

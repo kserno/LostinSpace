@@ -41,8 +41,12 @@ public class Ship {
 
     private GameWorld world;
 
+    private boolean clicking;
 
-    public Ship(float x, float y, float width, float height, GameWorld world,float screenHeight){
+    private boolean goTop, stopped;
+
+
+    public Ship(float x, float y, float width, float height, GameWorld world, float screenHeight, boolean clicking){
         position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
         sx = x;
@@ -50,6 +54,7 @@ public class Ship {
         this.height = height;
         this.width = width;
         this.world = world;
+        this.clicking = clicking;
         offset = screenHeight / 72;
         speed = screenHeight / 5.14f;
         boundingPolygon = new Polygon();
@@ -62,39 +67,67 @@ public class Ship {
                 -width / 4, -height / 16 * 7,
                 width / 4, -height / 4};
         boundingPolygon.setVertices(aVertices);
-
-
+        goTop = false;
+        stopped = true;
     }
     public void update(float delta){
-        originX = (position.x+width/2);
-        originY = (position.y+height/2);
+        originX = (position.x + width / 2);
+        originY = (position.y + height / 2);
 
-        position.add(velocity.cpy().scl(delta));
-
-        if(world.currentState != GameWorld.GameState.DYING) {
-            if (originY > goToY - offset && originY < goToY + offset) {
+        if(clicking) {
+            position.add(velocity.cpy().scl(delta));
+            if(position.y > 0 - offset && position.y < 0 + offset ) {
                 velocity.y = 0;
-            } else if (originY > goToY) {
+                destinedRotation = 0;
+                position.y = offset;
+                stopped = true;
+            }else if (position.y < world.height - height + offset && position.y > world.height - height - offset){
+                velocity.y = 0;
+                destinedRotation = 0;
+                position.y = world.height - height - offset;
+                stopped = true;
+            }
+            if(goTop && !stopped) {
                 velocity.y = (-speed + currentRotation * 2) * world.getGameSpeed();
-            } else if (originY < goToY) {
+                destinedRotation = -20;
+            }else if(!stopped) {
                 velocity.y = (speed + currentRotation * 2) * world.getGameSpeed();
+                destinedRotation = 20;
+            }
+
+            if(world.currentState == GameWorld.GameState.DYING) {
+                velocity.y = (speed + currentRotation * 2) * world.getGameSpeed();
+                destinedRotation = 360;
             }
         }else {
-            if (originY > goToY - offset && originY < goToY + offset) {
-                velocity.y = 5;
-            } else if (originY > goToY) {
-                velocity.y = (speed / 2 + currentRotation * 2) * world.getGameSpeed();
-            } else if (originY < goToY) {
-                velocity.y = (-speed / 2 + currentRotation * 2) * world.getGameSpeed();
+            position.add(velocity.cpy().scl(delta));
+
+            if (world.currentState != GameWorld.GameState.DYING) {
+                if (originY > goToY - offset && originY < goToY + offset) {
+                    velocity.y = 0;
+                } else if (originY > goToY) {
+                    velocity.y = (-speed + currentRotation * 2) * world.getGameSpeed();
+                } else if (originY < goToY) {
+                    velocity.y = (speed + currentRotation * 2) * world.getGameSpeed();
+                }
+            } else {
+                if (originY > goToY - offset && originY < goToY + offset) {
+                    velocity.y = 5;
+                } else if (originY > goToY) {
+                    velocity.y = (speed / 2 + currentRotation * 2) * world.getGameSpeed();
+                } else if (originY < goToY) {
+                    velocity.y = (-speed / 2 + currentRotation * 2) * world.getGameSpeed();
+                }
+            }
+            if (world.currentState != GameWorld.GameState.DYING) {
+                prepona = (float) Math.sqrt(((goToX - originX) * (goToX - originX)) + ((originY - goToY) * (originY - goToY)));
+                destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona)) * -1;
+            } else {
+                prepona = (float) Math.sqrt(((goToX - originX) * (goToX - originX)) + ((originY - goToY) * (originY - goToY)));
+                destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona));
             }
         }
-        if(world.currentState != GameWorld.GameState.DYING) {
-            prepona = (float) Math.sqrt(((goToX - originX) * (goToX - originX)) + ((originY - goToY) * (originY - goToY)));
-            destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona)) * -1;
-        }else {
-            prepona = (float) Math.sqrt(((goToX - originX) * (goToX - originX)) + ((originY - goToY) * (originY - goToY)));
-            destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona));
-        }
+
         rotationChange(delta);
 
         boundingPolygon.setPosition(originX, originY);
@@ -112,13 +145,18 @@ public class Ship {
         }
     }
 
-    public void onClick(int screenX, int screenY){
+    public void onDrag(int screenX, int screenY){
         goToY = screenY;
         if(screenX<(width*6)/3){
             goToX = ((int) (width*6))/3;
         }else {
             goToX = screenX;
         }
+    }
+
+    public void onClick(int screenX, int screenY) {
+        goTop = !goTop;
+        stopped = false;
     }
     public float getX() {
         return position.x;
@@ -184,10 +222,14 @@ public class Ship {
         goToX = (int) position.x;
         shield = true;
         energy = 0;
+        currentRotation = 0;
+        destinedRotation = 0;
+        stopped = true;
     }
 
     public int getCurrentEnergy() {
         return energy;
     }
+
 }
 

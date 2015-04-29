@@ -49,7 +49,6 @@ public class AssetLoader {
 
     /////////////////////////////////////HANGAR ASSETS////////////////////////////////////////////
 
-    public static Sprite hangarShip;
 
     public static Sprite[] hangarShips;
 
@@ -166,20 +165,12 @@ public class AssetLoader {
     }
 
     private static void loadHangarShips(int width, int height) {
-        hangarShips = new Sprite[6];
-        for(int i=0; i<6; i++) {
-            if (i==2 && getTotalEnergy() < 500) {
-                hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/lockedship.png")));
-                hangarShip.setSize(width / 6 * 4, height / 6 * 4);
-                hangarShip.setPosition(width / 6, height / 8);
-                hangarShip.flip(false, true);
-            } else {
-                hangarShip = new Sprite(new Texture(Gdx.files.internal("data/hangarships/" + (i+ 1) + ".png")));
-                hangarShip.setSize(width / 6 * 4, height / 6 * 4);
-                hangarShip.setPosition(width / 6, height / 8);
-                hangarShip.flip(false, true);
-            }
-            hangarShips[i] = new Sprite(hangarShip);
+        hangarShips = new Sprite[7];
+        for(int i=0; i<7; i++) {
+            hangarShips[i] = new Sprite(new Texture(Gdx.files.internal("data/hangarships/" + (i+ 1) + ".png")));
+            hangarShips[i].setSize(width / 6 * 4, height / 6 * 4);
+            hangarShips[i].setPosition(width / 6, height / 8);
+            hangarShips[i].flip(false, true);
         }
     }
 

@@ -59,7 +59,7 @@ public class GameWorld {
         READY, RUNNING, GAMEOVER, HISCORE, PAUSE, DYING
     }
 
-    public GameWorld(float width, float height, AdsController adsController, AssetManager manager, Music music) {
+    public GameWorld(float width, float height, AdsController adsController, AssetManager manager, Music music, boolean clicking) {
         this.music = music;
         currentState = GameState.READY;
         this.manager = manager;
@@ -69,7 +69,7 @@ public class GameWorld {
         this.width = width;
         this.height = height;
         this.adsController = adsController;
-        ship = new Ship(width / 12, height / 2 - width / 6 / 3, width / 6, width / 6 / 3 * 2, this, height);
+        ship = new Ship(width / 12, height / 2 - width / 6 / 3, width / 6, width / 6 / 3 * 2, this, height, clicking);
         r = new Random();
         pauseButton = new Rectangle(width - width / 10, height/20, width/10, height/10 + height/20);
         tryAgainRect = new Rectangle(width / 3*2 -width/5/2 , height / 2, width / 5, height / 20 * 3);
@@ -103,8 +103,11 @@ public class GameWorld {
     private void updateDying(float delta) {
         dyingTime += delta;
         ship.update(delta);
-        if(cracksAlpha>0){
+        if(cracksAlpha>0f){
             cracksAlpha -= delta / 2;
+        }
+        if(cracksAlpha<0.1f) {
+            cracksAlpha = 0f;
         }
         if(dyingTime > 1) {
 
