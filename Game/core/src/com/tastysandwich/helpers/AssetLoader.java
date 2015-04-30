@@ -40,6 +40,8 @@ public class AssetLoader {
 
     public static Sprite shieldOn, shieldOff;
 
+    public static Sprite sSoundsF, sSoundsT;
+
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
     public static Sprite sMenuBackground, hangarBackground;
 
@@ -122,17 +124,17 @@ public class AssetLoader {
 
         //BUTTON SOUNDS TRUE
         texture = new Texture("data/soundsT.png");
-        sprite = new Sprite(texture);
-        sprite.setSize(width/14, width/14);
-        sprite.flip(false,true);
-        sdSoundsT = new SpriteDrawable(sprite);
+        sSoundsT = new Sprite(texture);
+        sSoundsT.setSize(width/14, width/14);
+        sSoundsT.flip(false,true);
+        sdSoundsT = new SpriteDrawable(sSoundsT);
 
         //BUTTON SOUNDS FALSE
         texture = new Texture("data/soundsF.png");
-        sprite = new Sprite(texture);
-        sprite.setSize(width/14, width/14);
-        sprite.flip(false,true);
-        sdSoundsF = new SpriteDrawable(sprite);
+        sSoundsF = new Sprite(texture);
+        sSoundsF.setSize(width/14, width/14);
+        sSoundsF.flip(false,true);
+        sdSoundsF = new SpriteDrawable(sSoundsF);
 
 
 

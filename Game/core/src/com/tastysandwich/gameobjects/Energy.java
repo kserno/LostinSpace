@@ -26,9 +26,9 @@ public class Energy {
     private Random r;
 
 
-    public Energy(float x, float y, float radius) {
+    public Energy(float x, float y, float radius, float gameSpeed) {
         position = new Vector2(x,y);
-        velocity = new Vector2(-100,0);
+        velocity = new Vector2(-100*gameSpeed,0);
         this.radius = radius;
         boundingPolygon = new Polygon();
         aVertices = new float[]{

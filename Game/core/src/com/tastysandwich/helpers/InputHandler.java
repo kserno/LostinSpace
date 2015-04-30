@@ -63,6 +63,16 @@ public class InputHandler implements InputProcessor {
         if (world.getCurrentState() == GameWorld.GameState.RUNNING && clicking) {
             ship.onClick(screenX, screenY);
         }
+        if (world.getCurrentState() == GameWorld.GameState.PAUSE) {
+            if (world.getMusicPlay()) {
+                world.turnOffMusic();
+                AssetLoader.setSounds(false);
+            } else {
+                world.turnOnMusic();
+                AssetLoader.setSounds(true);
+            }
+        }
+
 
         return false;
     }

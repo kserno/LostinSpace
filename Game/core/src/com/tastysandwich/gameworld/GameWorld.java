@@ -40,6 +40,7 @@ public class GameWorld {
     private Rectangle tryAgainRect;
     private Rectangle pauseButton;
     private Rectangle menuRect;
+    private Rectangle soundsRect;
 
     private AdsController adsController;
 
@@ -47,11 +48,22 @@ public class GameWorld {
     private Sound explosion;
     public boolean shake = false;
     private Music music;
+    private Boolean musicPlay;
 
     public float cracksAlpha;
 
     public void start() {
         currentState = GameState.RUNNING;
+    }
+
+    public void turnOnMusic() {
+        music.play();
+        musicPlay = false;
+    }
+
+    public void turnOffMusic() {
+        music.stop();
+        musicPlay = true;
     }
 
     public enum GameState {
@@ -74,6 +86,9 @@ public class GameWorld {
         pauseButton = new Rectangle(width - width / 10, height/20, width/10, height/10 + height/20);
         tryAgainRect = new Rectangle(width / 3*2 -width/5/2 , height / 2, width / 5, height / 20 * 3);
         menuRect = new Rectangle(width / 3 - width/5/2, height/2, width/5, height/20*3);
+        soundsRect = new Rectangle(width - width/11, AssetLoader.sSoundsF.getWidth() ,width/11 - width/14, AssetLoader.sSoundsF.getHeight());
+        musicPlay = AssetLoader.getSounds();
+
     }
 
     public void update(float delta, float runTime) {
@@ -166,7 +181,7 @@ public class GameWorld {
             score += delta * gameSpeed;
         }
         if ((int) (runTime) % 10 == 0 && !eIsActive) {
-            energy = new Energy(width, (float) r.nextInt((int) height), width/21.33f);
+            energy = new Energy(width, (float) r.nextInt((int) (height-3*width/21.33f))+ width/21.33f, width/21.33f, gameSpeed);
             eIsActive = true;
 
         }
@@ -290,11 +305,19 @@ public class GameWorld {
     public void resume() {
         adsController.hideBannerAd();
         currentState = GameState.RUNNING;
-        music.play();
+        if (AssetLoader.getSounds()) music.play();
+    }
+
+    public Rectangle getSoundsRect() {
+        return soundsRect;
     }
 
     public AdsController getAdsController() {
         return  adsController;
+    }
+
+    public Boolean getMusicPlay() {
+        return musicPlay;
     }
 
 }

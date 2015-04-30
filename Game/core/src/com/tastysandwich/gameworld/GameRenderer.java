@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.tastysandwich.gameobjects.Ship;
 import com.tastysandwich.gameobjects.Energy;
 import com.tastysandwich.helpers.AssetLoader;
@@ -40,6 +41,8 @@ public class GameRenderer {
     private Sprite shieldOff, shieldOn;
 
     private boolean updateEnergy = false;
+
+    private Sprite soundsF, soundsT;
 
 
     //Rumble
@@ -93,6 +96,10 @@ public class GameRenderer {
         hit = AssetLoader.hit;
         shieldOff = AssetLoader.shieldOff;
         shieldOn = AssetLoader.shieldOn;
+        soundsF = AssetLoader.sSoundsF;
+        soundsT = AssetLoader.sSoundsT;
+        soundsF.setPosition(width - width/11, width/11 -width/14);
+        soundsT.setPosition(width - width/11, width/11 -width/14);
     }
     private void initGameObjects() {
         ship = myWorld.getShip();
@@ -148,6 +155,11 @@ public class GameRenderer {
         hit.draw(batcher);
         renderEnergyBar();
         AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 16);
+        if (myWorld.getMusicPlay()) {
+            soundsT.draw(batcher);
+        } else {
+            soundsF.draw(batcher);
+        }
         pauseScreen.draw(batcher);
     }
 
