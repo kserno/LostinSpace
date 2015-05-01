@@ -58,12 +58,12 @@ public class GameWorld {
 
     public void turnOnMusic() {
         music.play();
-        musicPlay = false;
+        musicPlay = true;
     }
 
     public void turnOffMusic() {
         music.stop();
-        musicPlay = true;
+        musicPlay = false;
     }
 
     public enum GameState {

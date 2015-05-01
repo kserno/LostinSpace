@@ -41,7 +41,7 @@ public class Menu implements Screen {
 
     private boolean playSounds;
 
-    private SpriteDrawable imgbPlay,imgbHangar, imgbSoundsT, imgbSoundsF;
+    private SpriteDrawable imgbPlay,imgbHangar, imgbSoundsT, imgbSoundsF, imgbClick, imgbDrag;
 
     private Sprite menuBackground;
 
@@ -88,15 +88,17 @@ public class Menu implements Screen {
         imgbHangar = AssetLoader.sdHangar;
         imgbSoundsT = AssetLoader.sdSoundsT;
         imgbSoundsF = AssetLoader.sdSoundsF;
+        imgbClick = AssetLoader.sdClick;
+        imgbDrag = AssetLoader.sdDrag;
 
-        Clicking = new ImageButton(imgbPlay);
+        Clicking = new ImageButton(imgbClick);
         Clicking.setPosition(width / 2 - width / 16 * 5, height / 24 * 7);
         Clicking.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 game.setScreen(new GameScreen(width, height, adsController, game, manager, music, true));
                 return true;
             }});
-        Dragging = new ImageButton(imgbPlay);
+        Dragging = new ImageButton(imgbDrag);
         Dragging.setPosition(width / 2, height / 24 * 7);
         Dragging.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

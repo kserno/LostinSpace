@@ -45,7 +45,7 @@ public class AssetLoader {
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
     public static Sprite sMenuBackground, hangarBackground;
 
-    public static SpriteDrawable sdPlay,sdHangar, sdSoundsT, sdSoundsF;
+    public static SpriteDrawable sdPlay,sdHangar, sdSoundsT, sdSoundsF, sdClick, sdDrag;
 
 
 
@@ -121,6 +121,18 @@ public class AssetLoader {
         sprite.setSize(width / 16 * 5, height / 20 * 3);
         sprite.flip(false,true);
         sdHangar = new SpriteDrawable(sprite);
+
+        texture = new Texture("data/skins/click.png");
+        sprite = new Sprite(texture);
+        sprite.setSize(width / 16 * 5, height / 20 * 3);
+        sprite.flip(false,true);
+        sdClick = new SpriteDrawable(sprite);
+
+        texture = new Texture("data/skins/drag.png");
+        sprite = new Sprite(texture);
+        sprite.setSize(width / 16 * 5, height / 20 * 3);
+        sprite.flip(false,true);
+        sdDrag = new SpriteDrawable(sprite);
 
         //BUTTON SOUNDS TRUE
         texture = new Texture("data/soundsT.png");

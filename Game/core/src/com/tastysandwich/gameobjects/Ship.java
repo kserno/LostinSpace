@@ -61,27 +61,27 @@ public class Ship {
         goToY = (int) ((int) position.y+height/2);
         goToX = (int) position.x;
         aVertices = new float[] {
-                width / 2, 0,
-                width / 4 , height / 4 ,
-                -width / 4, height / 16 * 7,
-                -width / 4, -height / 16 * 7,
-                width / 4, -height / 4};
+                width / 3, 0,
+                /*0 , height / 5 ,*/
+                -width / 3, height / 16 * 7,
+                -width / 3, -height / 16 * 7
+                /*0, -height / 5*/};
         boundingPolygon.setVertices(aVertices);
         goTop = false;
         stopped = true;
     }
     public void update(float delta){
-        originX = (position.x + width / 2);
+        originX = (position.x + width / 1.5f);
         originY = (position.y + height / 2);
 
         if(clicking) {
             position.add(velocity.cpy().scl(delta));
-            if(position.y > 0 - offset && position.y < 0 + offset ) {
+            if(position.y > 0 - offset && position.y < 0 + offset && world.currentState != GameWorld.GameState.DYING ) {
                 velocity.y = 0;
                 destinedRotation = 0;
                 position.y = offset;
                 stopped = true;
-            }else if (position.y < world.height - height + offset && position.y > world.height - height - offset){
+            }else if (position.y < world.height - height + offset && position.y > world.height - height - offset && world.currentState != GameWorld.GameState.DYING ){
                 velocity.y = 0;
                 destinedRotation = 0;
                 position.y = world.height - height - offset;

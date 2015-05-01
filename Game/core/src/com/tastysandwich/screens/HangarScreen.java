@@ -51,7 +51,7 @@ public class HangarScreen implements Screen {
 
     private BitmapFont font;
 
-    private int energyLeft1, energyLeft2;
+    private int energyLeft1, energyLeft2, totalEnergy;
 
     public HangarScreen(final float width, final float height, final MainClass game, AdsController adsController, AssetManager manager) {
         this.manager = manager;
@@ -70,8 +70,9 @@ public class HangarScreen implements Screen {
         batcher = new SpriteBatch();
         batcher.setProjectionMatrix(cam.combined);
 
-        energyLeft1 = (100-AssetLoader.getTotalEnergy());
-        energyLeft2 = (200-AssetLoader.getTotalEnergy());
+        totalEnergy = AssetLoader.getTotalEnergy();
+        energyLeft1 = (100-totalEnergy);
+        energyLeft2 = (300-totalEnergy);
         nship = AssetLoader.getSelectedShip();
         hangarBackground = AssetLoader.hangarBackground;
         hangarShips = AssetLoader.hangarShips;
@@ -96,7 +97,7 @@ public class HangarScreen implements Screen {
         if (nship == 1 && AssetLoader.getTotalEnergy() < 100) {
             hangarShips[6].draw(batcher);
             font.draw(batcher, "You need "+energyLeft1+" more energy", width / 2 - font.getBounds("You need"+energyLeft1+" more energy").width / 2, height / 2 - font.getBounds(""+energyLeft1).height);
-        } else if (nship == 2 && AssetLoader.getTotalEnergy() < 200) {
+        } else if (nship == 2 && AssetLoader.getTotalEnergy() < 300) {
             hangarShips[6].draw(batcher);
             font.draw(batcher, "You need "+energyLeft2+" more energy", width / 2 - font.getBounds("You need"+energyLeft2+" more energy").width / 2, height / 2 - font.getBounds(""+energyLeft2).height);
         } else if (AssetLoader.getSelectedShip()== nship) {
@@ -104,6 +105,7 @@ public class HangarScreen implements Screen {
         } else {
             hangarShips[nship].draw(batcher);
         }
+        font.draw(batcher, ""+totalEnergy, width / 16 * 9 - font.getBounds(""+totalEnergy).width, height / 12);
         batcher.end();
 
     }
@@ -147,15 +149,15 @@ public class HangarScreen implements Screen {
     }
 
     public void moveLeft() {
-        if (nship== 2) nship =0; else nship++;
-    }
-
-    public void moveRight() {
         if (nship== 0) nship =2; else nship--;
     }
 
+    public void moveRight() {
+        if (nship== 2) nship =0; else nship++;
+    }
+
     public void changeShip() {
-        if (nship == 2 && AssetLoader.getTotalEnergy() < 200) {
+        if (nship == 2 && AssetLoader.getTotalEnergy() < 300) {
             // do nothing
         }else if(nship == 1 && AssetLoader.getTotalEnergy() < 100){
             // do nothing #2
