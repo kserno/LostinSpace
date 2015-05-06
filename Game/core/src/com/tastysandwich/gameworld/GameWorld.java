@@ -13,6 +13,7 @@ import com.tastysandwich.gameobjects.Energy;
 import com.tastysandwich.helpers.AssetLoader;
 
 
+import java.net.URL;
 import java.util.Random;
 
 /**
@@ -51,6 +52,9 @@ public class GameWorld {
     private Boolean musicPlay;
 
     public float cracksAlpha;
+
+
+
 
     public void start() {
         currentState = GameState.RUNNING;

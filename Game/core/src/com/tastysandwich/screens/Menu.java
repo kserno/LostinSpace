@@ -19,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.tastysandwich.game.AdsController;
 import com.tastysandwich.game.MainClass;
+import com.tastysandwich.game.PostHiScore;
+import com.tastysandwich.game.RequestHiScore;
 import com.tastysandwich.helpers.AssetLoader;
 
 /**
@@ -52,10 +54,15 @@ public class Menu implements Screen {
 
     private AssetManager manager;
 
+    private PostHiScore p;
+    private RequestHiScore r;
+
     private boolean play;
 
-    public Menu(final float width, final float height, final MainClass game, final AdsController adsController, final AssetManager manager) {
+    public Menu(final float width, final float height, final MainClass game, final AdsController adsController, final AssetManager manager, PostHiScore p, RequestHiScore r) {
         this.manager = manager;
+        this.r=r;
+        this.p=p;
         this.width = width;
         this.height = height;
         adsController.hideBannerAd();
