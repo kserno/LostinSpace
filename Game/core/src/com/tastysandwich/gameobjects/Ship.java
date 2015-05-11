@@ -43,7 +43,9 @@ public class Ship {
 
     private boolean clicking;
 
-    private boolean goTop, stopped;
+    private boolean goTop, stopped, dieRotate;
+
+    private Random random;
 
 
     public Ship(float x, float y, float width, float height, GameWorld world, float screenHeight, boolean clicking){
@@ -61,17 +63,18 @@ public class Ship {
         goToY = (int) ((int) position.y+height/2);
         goToX = (int) position.x;
         aVertices = new float[] {
-                width / 3, 0,
-                /*0 , height / 5 ,*/
-                -width / 3, height / 16 * 7,
-                -width / 3, -height / 16 * 7
-                /*0, -height / 5*/};
+                width / 2, 0,
+                width / 4, height / 5 ,
+                -width / 4, height / 16 * 7,
+                -width / 4, -height / 16 * 7,
+                width / 4, -height / 5};
         boundingPolygon.setVertices(aVertices);
         goTop = false;
         stopped = true;
+        random = new Random();
     }
     public void update(float delta){
-        originX = (position.x + width / 1.5f);
+        originX = (position.x + width / 2);
         originY = (position.y + height / 2);
 
         if(clicking) {
@@ -96,8 +99,8 @@ public class Ship {
             }
 
             if(world.currentState == GameWorld.GameState.DYING) {
-                velocity.y = (speed + currentRotation * 2) * world.getGameSpeed();
-                destinedRotation = 360;
+                if(dieRotate)   destinedRotation = 360;
+                else    destinedRotation = -360;
             }
         }else {
             position.add(velocity.cpy().scl(delta));
@@ -110,21 +113,13 @@ public class Ship {
                 } else if (originY < goToY) {
                     velocity.y = (speed + currentRotation * 2) * world.getGameSpeed();
                 }
-            } else {
-                if (originY > goToY - offset && originY < goToY + offset) {
-                    velocity.y = 5;
-                } else if (originY > goToY) {
-                    velocity.y = (speed / 2 + currentRotation * 2) * world.getGameSpeed();
-                } else if (originY < goToY) {
-                    velocity.y = (-speed / 2 + currentRotation * 2) * world.getGameSpeed();
-                }
             }
             if (world.currentState != GameWorld.GameState.DYING) {
                 prepona = (float) Math.sqrt(((goToX - originX) * (goToX - originX)) + ((originY - goToY) * (originY - goToY)));
                 destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona)) * -1;
             } else {
-                prepona = (float) Math.sqrt(((goToX - originX) * (goToX - originX)) + ((originY - goToY) * (originY - goToY)));
-                destinedRotation = (float) Math.toDegrees(Math.asin((originY - goToY) / prepona));
+                if(dieRotate)   destinedRotation = 360;
+                else    destinedRotation = -360;
             }
         }
 
@@ -188,10 +183,11 @@ public class Ship {
     }
 
     public void die() {
-        Random r = new Random();
-        velocity.y = r.nextInt((int) (speed * 2)) - speed;
+        velocity.y = random.nextInt((int) (speed * 2)) - speed;
         isAlive = false;
-
+        int i = random.nextInt(2);
+        if(i==0)    dieRotate=true;
+        else    dieRotate=false;
     }
 
     public void collide() {

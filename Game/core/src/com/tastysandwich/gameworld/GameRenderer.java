@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.tastysandwich.gameobjects.Ship;
 import com.tastysandwich.gameobjects.Energy;
 import com.tastysandwich.helpers.AssetLoader;
@@ -20,8 +21,8 @@ public class GameRenderer {
 
     private GameWorld myWorld;
     private OrthographicCamera cam;
-
     private SpriteBatch batcher;
+
     private Sprite background,stars1,stars2;
     private Animation shipAnimation;
     private Animation energyAnimation;
@@ -33,6 +34,7 @@ public class GameRenderer {
 
     private Ship ship;
     private Energy energy;
+
     private Texture textAsteroids[];
     private Sprite scoreTable;
     private Sprite[] energyBar;
@@ -116,7 +118,6 @@ public class GameRenderer {
             updateEnergy = true;
         }
 
-
         switch (myWorld.getCurrentState()) {
             case RUNNING:
                 renderRunning(runTime, delta);
@@ -142,7 +143,7 @@ public class GameRenderer {
     private void renderPause(float runTime) {
         drawBackground(false);
         batcher.enableBlending();
-        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 1.5f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
+        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         for (int i = 0; i <= myWorld.nAsteroids; i++) {
             batcher.draw(textAsteroids[myWorld.asteroids[i].getType()], myWorld.asteroids[i].getX(), myWorld.asteroids[i].getY(), myWorld.asteroids[i].getRadius() / 2.0f, myWorld.asteroids[i].getRadius() / 2.0f,  myWorld.asteroids[i].getRadius(), myWorld.asteroids[i].getRadius(), 1, 1,
                     myWorld.asteroids[i].getRotation(), 0, 0, 1000, 1000, false, false);
@@ -165,7 +166,7 @@ public class GameRenderer {
     private void renderReady(float runTime) {
         drawBackground(true);
         batcher.enableBlending();
-        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 1.5f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
+        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         renderEnergyBar();
         AssetLoader.font.draw(batcher, "" + myWorld.getScore(), width / 2 - AssetLoader.font.getBounds(String.valueOf(myWorld.getScore())).width / 2, height / 16);
         startScreen.draw(batcher);
@@ -214,7 +215,7 @@ public class GameRenderer {
     private void renderRunning(float runTime, float delta) {
         drawBackground(true);
         batcher.enableBlending();
-        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 1.5f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
+        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         for (int i = 0; i <= myWorld.nAsteroids; i++) {
             batcher.draw(textAsteroids[myWorld.asteroids[i].getType()], myWorld.asteroids[i].getX(), myWorld.asteroids[i].getY(), myWorld.asteroids[i].getRadius() / 2.0f, myWorld.asteroids[i].getRadius() / 2.0f,  myWorld.asteroids[i].getRadius(), myWorld.asteroids[i].getRadius(), 1, 1,
                     myWorld.asteroids[i].getRotation(), 0, 0, 1000, 1000, false, false);
@@ -234,7 +235,7 @@ public class GameRenderer {
     private void renderDying(float runTime, float delta) {
         drawBackground(true);
         batcher.enableBlending();
-        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 1.5f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
+        batcher.draw(shipAnimation.getKeyFrame(runTime), ship.getX(), ship.getY(), ship.getWidth() / 2.0f, ship.getHeight() / 2.0f, ship.getWidth(), ship.getHeight(), 1, 1, ship.getRotation());
         batcher.draw(explosionAnimation.getKeyFrame(myWorld.dyingTime), ship.getX()- ship.getWidth() / 4, ship.getY(), ship.getWidth() * 1.5f, ship.getHeight()*1.5f);
         hit.setAlpha(myWorld.cracksAlpha);
         hit.draw(batcher);

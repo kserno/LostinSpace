@@ -19,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.tastysandwich.game.AdsController;
+import com.tastysandwich.game.PostHiScore;
+import com.tastysandwich.game.RequestHiScore;
 import com.tastysandwich.helpers.AssetLoader;
 import com.tastysandwich.game.MainClass;
 import com.tastysandwich.helpers.HangarInput;
@@ -53,11 +55,16 @@ public class HangarScreen implements Screen {
 
     private int energyLeft1, energyLeft2, totalEnergy;
 
-    public HangarScreen(final float width, final float height, final MainClass game, AdsController adsController, AssetManager manager) {
+    private PostHiScore p;
+    private RequestHiScore r;
+
+    public HangarScreen(final float width, final float height, final MainClass game, AdsController adsController, AssetManager manager, PostHiScore p, RequestHiScore r) {
         this.manager = manager;
         this.width = width;
         this.height = height;
         this.game = game;
+        this.p = p;
+        this.r = r;
         this.adsController = adsController;
         if(adsController.isInternetConnected()) {adsController.showBannerAd();}
         cam = new OrthographicCamera();
@@ -145,7 +152,7 @@ public class HangarScreen implements Screen {
     public Rectangle getShipRect() { return hangarShips[nship].getBoundingRectangle(); }
 
     public void setScreen() {
-        game.setScreen(new Menu(width, height, game, adsController, manager));
+        game.setScreen(new Menu(width, height, game, adsController, manager,p ,r));
     }
 
     public void moveLeft() {

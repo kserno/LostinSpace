@@ -45,7 +45,7 @@ public class AssetLoader {
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
     public static Sprite sMenuBackground, hangarBackground;
 
-    public static SpriteDrawable sdPlay,sdHangar, sdSoundsT, sdSoundsF, sdClick, sdDrag;
+    public static SpriteDrawable sdPlay,sdHangar, sdSoundsT, sdSoundsF, sdClick, sdDrag, sdLeaderBoards, sdLeaderBoardsBackground, sdChangeName;
 
 
 
@@ -103,7 +103,6 @@ public class AssetLoader {
         hangarBackground.flip(false,true);
         hangarBackground.setY(0);
         hangarBackground.setX(0);
-
     }
 
 
@@ -133,6 +132,25 @@ public class AssetLoader {
         sprite.setSize(width / 16 * 5, height / 20 * 3);
         sprite.flip(false,true);
         sdDrag = new SpriteDrawable(sprite);
+
+        texture = new Texture("data/skins/leaderboards.png");
+        sprite = new Sprite(texture);
+        sprite.setSize(width / 16 * 5, height / 20 * 3);
+        sprite.flip(false,true);
+        sdLeaderBoards = new SpriteDrawable(sprite);
+
+        texture = new Texture("data/skins/leaderboardsscreen.png");
+        sprite = new Sprite(texture);
+        sprite.setSize(width, height);
+        sprite.flip(false,true);
+        sdLeaderBoardsBackground = new SpriteDrawable(sprite);
+
+        texture = new Texture("data/skins/name.png");
+        sprite = new Sprite(texture);
+        sprite.setSize(width / 6, height / 3);
+        sprite.flip(false,true);
+        sdChangeName = new SpriteDrawable(sprite);
+
 
         //BUTTON SOUNDS TRUE
         texture = new Texture("data/soundsT.png");
@@ -342,6 +360,15 @@ public class AssetLoader {
     public static boolean getSounds() {
         return prefs.getBoolean("Sounds");
     }
+
+    public static void setUserName(String val) {
+        prefs.putString("UserName", val);
+        prefs.flush();
+    }
+
+    public static String getUserName() { return prefs.getString("UserName"); }
+
+    public static boolean getName() { return prefs.contains("UserName"); }
 
     public static void dispose() {
         font.dispose();

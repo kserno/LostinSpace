@@ -7,13 +7,14 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.tastysandwich.game.AdsController;
+import com.tastysandwich.game.PostHiScore;
+import com.tastysandwich.game.RequestHiScore;
+import com.tastysandwich.game.UserScore;
 import com.tastysandwich.gameobjects.Asteroid;
 import com.tastysandwich.gameobjects.Ship;
 import com.tastysandwich.gameobjects.Energy;
 import com.tastysandwich.helpers.AssetLoader;
 
-
-import java.net.URL;
 import java.util.Random;
 
 /**
@@ -22,7 +23,7 @@ import java.util.Random;
 public class GameWorld {
     private Ship ship;
     public float width, height;
-    private Random r;
+    private Random random;
     public Energy energy;
 
     public boolean eIsActive = false;
@@ -53,6 +54,9 @@ public class GameWorld {
 
     public float cracksAlpha;
 
+    private PostHiScore p;
+    private RequestHiScore r;
+
 
 
 
@@ -75,7 +79,7 @@ public class GameWorld {
         READY, RUNNING, GAMEOVER, HISCORE, PAUSE, DYING
     }
 
-    public GameWorld(float width, float height, AdsController adsController, AssetManager manager, Music music, boolean clicking) {
+    public GameWorld(float width, float height, AdsController adsController, AssetManager manager, Music music, boolean clicking, PostHiScore p, RequestHiScore r) {
         this.music = music;
         currentState = GameState.READY;
         this.manager = manager;
@@ -85,8 +89,12 @@ public class GameWorld {
         this.width = width;
         this.height = height;
         this.adsController = adsController;
+
+        this.p = p;
+        this.r = r;
+
         ship = new Ship(width / 12, height / 2 - width / 6 / 3, width / 6, width / 6 / 3 * 2, this, height, clicking);
-        r = new Random();
+        random = new Random();
         pauseButton = new Rectangle(width - width / 10, height/20, width/10, height/10 + height/20);
         tryAgainRect = new Rectangle(width / 3*2 -width/5/2 , height / 2, width / 5, height / 20 * 3);
         menuRect = new Rectangle(width / 3 - width/5/2, height/2, width/5, height/20*3);
@@ -132,6 +140,10 @@ public class GameWorld {
 
             if(adsController.isInternetConnected()) {adsController.showBannerAd();}
             if (AssetLoader.getHighScore() < score) {
+
+                if(adsController.isInternetConnected() && AssetLoader.getName()){
+                    p.post(new UserScore(AssetLoader.getUserName(), (int) score));
+                }
                 currentState = GameState.HISCORE;
                 AssetLoader.setHighScore((int) score);
             } else {
@@ -176,8 +188,8 @@ public class GameWorld {
         if (gameSpeed < 3) {
             gameSpeed += delta / 64;
         }
-        if (spawnAsteroid > 7 && nAsteroids < 8) {
-            asteroids[nAsteroids + 1] = new Asteroid(width, (float) r.nextInt((int) height), r.nextInt(200) - 100, this);
+        if (spawnAsteroid > 6 && nAsteroids < 8) {
+            asteroids[nAsteroids + 1] = new Asteroid(width, (float) random.nextInt((int) height), random.nextInt(200) - 100, this);
             nAsteroids++;
             spawnAsteroid = 0;
         }
@@ -185,7 +197,7 @@ public class GameWorld {
             score += delta * gameSpeed;
         }
         if ((int) (runTime) % 10 == 0 && !eIsActive) {
-            energy = new Energy(width, (float) r.nextInt((int) (height-3*width/21.33f))+ width/21.33f, width/21.33f, gameSpeed);
+            energy = new Energy(width, (float) random.nextInt((int) (height-3*width/21.33f))+ width/21.33f, width/21.33f, gameSpeed);
             eIsActive = true;
 
         }

@@ -55,7 +55,6 @@ public class requestHiScore extends AsyncTask<String, String, UserScore[]> {
                 e.printStackTrace();
             }
         }
-
         try {
             JSONObject jsonObject = new JSONObject(sJSON);
             if (jsonObject.has("error")) {
