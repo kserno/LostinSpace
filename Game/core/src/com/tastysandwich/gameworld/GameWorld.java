@@ -52,7 +52,8 @@ public class GameWorld {
     private Music music;
     private Boolean musicPlay;
 
-    public float cracksAlpha;
+    private float cracksAlpha;
+    private boolean drawCracks;
 
     private PostHiScore p;
     private RequestHiScore r;
@@ -84,6 +85,7 @@ public class GameWorld {
         currentState = GameState.READY;
         this.manager = manager;
         cracksAlpha = 0f;
+        drawCracks = false;
         explosion = manager.get("data/audio/explosion.mp3", Sound.class);
         asteroids = new Asteroid[9];
         this.width = width;
@@ -133,8 +135,8 @@ public class GameWorld {
         if(cracksAlpha>0f){
             cracksAlpha -= delta / 2;
         }
-        if(cracksAlpha<0.1f) {
-            cracksAlpha = 0f;
+        if(cracksAlpha <= 0f) {
+            drawCracks = false;
         }
         if(dyingTime > 1) {
 
@@ -217,6 +219,7 @@ public class GameWorld {
         for (int i = 0; i <= nAsteroids; i++) {
             if (asteroids[i].collides(ship)) {
                 cracksAlpha = 1f;
+                drawCracks = true;
                 shake = true;
                 ship.collide();
                 asteroids[i].restart();
@@ -332,8 +335,12 @@ public class GameWorld {
         return  adsController;
     }
 
-    public Boolean getMusicPlay() {
+    public boolean getMusicPlay() {
         return musicPlay;
     }
+
+    public boolean getDrawCracks() { return drawCracks; }
+
+    public float getCracksAlpha() { return cracksAlpha; }
 
 }

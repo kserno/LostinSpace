@@ -38,6 +38,7 @@ public class MainClass extends Game{
         int height = Gdx.graphics.getHeight();
         int width = Gdx.graphics.getWidth();
         AssetLoader.load(width, height);
+        Gdx.input.setCatchBackKey(true);
         if(adsController.isInternetConnected()) adsController.loadAd();
         setScreen(new Menu(width, height, this, adsController, manager, p,r));
 

@@ -1,5 +1,6 @@
 package com.tastysandwich.helpers;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.tastysandwich.screens.HangarScreen;
 
@@ -16,6 +17,9 @@ public class HangarInput implements InputProcessor {
     }
     @Override
     public boolean keyDown(int keycode) {
+        if(keycode == Input.Keys.BACK){
+            screen.setScreen();
+        }
         return false;
     }
 

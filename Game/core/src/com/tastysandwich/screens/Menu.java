@@ -59,12 +59,16 @@ public class Menu implements Screen {
 
     private AssetManager manager;
 
+    private AdsController adsController;
+
     private PostHiScore p;
     private RequestHiScore r;
 
     private boolean play;
 
     private boolean leaderBoards;
+
+    private int loadingLB;
 
     private BitmapFont font;
 
@@ -75,12 +79,14 @@ public class Menu implements Screen {
         this.p=p;
         this.width = width;
         this.height = height;
+        this.adsController = adsController;
         adsController.hideBannerAd();
         cam = new OrthographicCamera();
         cam.setToOrtho(true, width, height);
 
         play = false;
         leaderBoards = false;
+        loadingLB = 0;
 
         font = AssetLoader.font;
 
@@ -161,15 +167,12 @@ public class Menu implements Screen {
         LeaderBoards.setPosition(width / 2 - width / 16 * 5 / 2, height / 6 * 3);
         LeaderBoards.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                leaderBoards = true;
+                loadingLB = 1;
                 table.removeActor(Play);
                 table.removeActor(Hangar);
                 table.removeActor(LeaderBoards);
                 table.removeActor(ChangeName);
                 table.add(LeaderBoardsBackground);
-                if(adsController.isInternetConnected())
-                    userScores = r.getUserScores();
-                else userScores = null;
                 return true;
             }});
         LeaderBoardsBackground = new ImageButton(imgbLeaderBoardsBackground);
@@ -177,6 +180,7 @@ public class Menu implements Screen {
         LeaderBoardsBackground.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 leaderBoards = false;
+                loadingLB = 0;
                 table.removeActor(LeaderBoardsBackground);
                 table.add(Play, Hangar, LeaderBoards, ChangeName);
                 return true;
@@ -246,22 +250,39 @@ public class Menu implements Screen {
         if(play) {
             Clicking.draw(batcher, 50f);
             Dragging.draw(batcher, 50f);
-        }else if(leaderBoards){
-            LeaderBoardsBackground.draw(batcher, 50f);
-            if(userScores != null) {
-                for(int i=0; i<userScores.length; i++){
-                    font.draw(batcher, (i+1)+".", width/8, height/10 * (i));
-                    font.draw(batcher, ""+userScores[i].getScore(), width/8 * 3, height/10 * (i));
-                    font.draw(batcher, userScores[i].getUser(), width/8 * 5, height/10 * (i));
-                }
-            }else {
-                font.draw(batcher, "Sorry, aber du hast keine Internet", 0, height / 2);
-            }
-        }else{
+        }else {
             Play.draw(batcher, 50f);
             Hangar.draw(batcher, 50f);
             LeaderBoards.draw(batcher, 50f);
             ChangeName.draw(batcher, 50f);
+            if (loadingLB != 0) {
+                switch (loadingLB) {
+                    case 1: {
+                        font.draw(batcher, "LOADING", width / 2 - font.getBounds("LOADING").width / 2, height / 2 + font.getBounds("LOADING").height / 2);
+                        loadingLB = 2;
+                        break;
+                    }
+                    case 2: {
+                        if (adsController.isInternetConnected())
+                            userScores = r.getUserScores();
+                        else userScores = null;
+                        leaderBoards = true;
+                        loadingLB = 0;
+                        break;
+                    }
+                }
+            } else if (leaderBoards) {
+                LeaderBoardsBackground.draw(batcher, 50f);
+                if (userScores != null) {
+                    for (int i = 0; i < userScores.length; i++) {
+                        font.draw(batcher, (i + 1) + ".", width / 8, (height - height / 5) / 10 * (i+1));
+                        font.draw(batcher, "" + userScores[i].getScore(), width / 8 * 2, (height - height / 5) / 10 * (i+1));
+                        font.draw(batcher, userScores[i].getUser(), width / 8 * 4, (height - height / 5) / 10 * (i+1));
+                    }
+                } else {
+                    font.draw(batcher, "Sorry, aber du hast keine Internet", 0, height / 2);
+                }
+            }
         }
         batcher.end();
 
