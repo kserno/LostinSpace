@@ -73,6 +73,7 @@ public class AssetLoader {
         if (!prefs.contains("Sounds")) {
             prefs.putBoolean("Sounds", true);
         }
+
         loadFont(width);
         loadButtons(width, height);
         loadGameAssets(width, height);
@@ -369,6 +370,22 @@ public class AssetLoader {
     public static String getUserName() { return prefs.getString("UserName"); }
 
     public static boolean getName() { return prefs.contains("UserName"); }
+
+    public static void setSavedName(Boolean b) {
+        prefs.putBoolean("savedname", b);
+    }
+
+    public static boolean getSavedName() {
+        return prefs.getBoolean("savedname");
+    }
+
+    public static boolean isSavedHiscore() {
+        return prefs.getBoolean("issavedhiscore");
+    }
+
+    public static void setIsSavedHiscore(Boolean b) {
+        prefs.putBoolean("issavedhiscore", b);
+    }
 
     public static void dispose() {
         font.dispose();

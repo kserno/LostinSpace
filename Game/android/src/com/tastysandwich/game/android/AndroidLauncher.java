@@ -27,7 +27,8 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         pstHiScore p = new pstHiScore();
         reqHiScore r = new reqHiScore(this);
-        View gameView = initializeForView(new MainClass(this,p ,r), config);
+        reqUsername u = new reqUsername(this);
+        View gameView = initializeForView(new MainClass(this,p ,r,u), config);
 
         setupAds();
 

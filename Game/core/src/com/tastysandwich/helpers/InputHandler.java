@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.tastysandwich.game.MainClass;
 import com.tastysandwich.game.PostHiScore;
 import com.tastysandwich.game.RequestHiScore;
+import com.tastysandwich.game.RequestUsername;
 import com.tastysandwich.gameobjects.Ship;
 import com.tastysandwich.gameworld.GameWorld;
 import com.tastysandwich.screens.Menu;
@@ -20,8 +21,9 @@ public class InputHandler implements InputProcessor {
     private boolean clicking;
     private PostHiScore p;
     private RequestHiScore r;
+    private RequestUsername u;
 
-    public InputHandler(Ship ship, GameWorld world, MainClass game, AssetManager manager, boolean clicking, PostHiScore p, RequestHiScore r) {
+    public InputHandler(Ship ship, GameWorld world, MainClass game, AssetManager manager, boolean clicking, PostHiScore p, RequestHiScore r, RequestUsername u) {
         this.world = world;
         this.ship = ship;
         this.game = game;
@@ -29,6 +31,7 @@ public class InputHandler implements InputProcessor {
         this.clicking = clicking;
         this.p = p;
         this.r = r;
+        this.u = u;
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -59,7 +62,7 @@ public class InputHandler implements InputProcessor {
             }
             if (world.getMenuRect().contains(screenX, screenY)) {
                 world.getAdsController().hideBannerAd();
-                game.setScreen(new Menu(world.width, world.height,game, world.getAdsController(), manager, p, r));
+                game.setScreen(new Menu(world.width, world.height,game, world.getAdsController(), manager, p, r,u));
             }
         }
         if (world.getCurrentState() == GameWorld.GameState.RUNNING && world.getPauseButton().contains((float) screenX, (float) screenY)){

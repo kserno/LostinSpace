@@ -22,6 +22,7 @@ import com.tastysandwich.game.AdsController;
 import com.tastysandwich.game.MainClass;
 import com.tastysandwich.game.PostHiScore;
 import com.tastysandwich.game.RequestHiScore;
+import com.tastysandwich.game.RequestUsername;
 import com.tastysandwich.game.UserScore;
 import com.tastysandwich.helpers.AssetLoader;
 
@@ -63,6 +64,7 @@ public class Menu implements Screen {
 
     private PostHiScore p;
     private RequestHiScore r;
+    private RequestUsername u;
 
     private boolean play;
 
@@ -73,10 +75,11 @@ public class Menu implements Screen {
     private BitmapFont font;
 
     private UserScore[] userScores;
-    public Menu(final float width, final float height, final MainClass game, final AdsController adsController, final AssetManager manager, final PostHiScore p, final RequestHiScore r) {
+    public Menu(final float width, final float height, final MainClass game, final AdsController adsController, final AssetManager manager, final PostHiScore p, final RequestHiScore r, final RequestUsername u) {
         this.manager = manager;
         this.r=r;
         this.p=p;
+        this.u = u;
         this.width = width;
         this.height = height;
         this.adsController = adsController;
@@ -124,14 +127,14 @@ public class Menu implements Screen {
         Clicking.setPosition(width / 2 - width / 16 * 5, height / 24 * 7);
         Clicking.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, true, p, r));
+                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, true, p, r,u));
                 return true;
             }});
         Dragging = new ImageButton(imgbDrag);
         Dragging.setPosition(width / 2, height / 24 * 7);
         Dragging.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, false, p, r));
+                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, false, p, r,u));
                 return true;
             }});
 
@@ -151,7 +154,7 @@ public class Menu implements Screen {
         Hangar.setPosition(width / 2 - width / 16 * 5 / 2,height / 6 * 2);
         Hangar.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new HangarScreen(width,height, game, adsController, manager, p, r));
+                game.setScreen(new HangarScreen(width,height, game, adsController, manager, p, r,u));
                 return true;
             }
         });
@@ -218,7 +221,21 @@ public class Menu implements Screen {
         Input.TextInputListener listener = new Input.TextInputListener() {
             @Override
             public void input(String text) {
-                AssetLoader.setUserName(text);
+                if (!AssetLoader.getName()) {
+                    if (u.requestUsername(text)) {
+                        AssetLoader.setUserName(text);
+                        System.out.println("username setted");
+                    } else {
+                        System.out.println("name already chosen");
+                    }
+                } else {
+                    if (u.requestUsername(text, AssetLoader.getUserName())) {
+                        AssetLoader.setUserName(text);
+                        System.out.println("username setted last one deleted");
+                    } else {
+                        System.out.println("name already chosen");
+                    }
+                }
             }
 
             @Override

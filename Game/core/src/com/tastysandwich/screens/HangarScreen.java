@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.tastysandwich.game.AdsController;
 import com.tastysandwich.game.PostHiScore;
 import com.tastysandwich.game.RequestHiScore;
+import com.tastysandwich.game.RequestUsername;
 import com.tastysandwich.helpers.AssetLoader;
 import com.tastysandwich.game.MainClass;
 import com.tastysandwich.helpers.HangarInput;
@@ -57,14 +58,16 @@ public class HangarScreen implements Screen {
 
     private PostHiScore p;
     private RequestHiScore r;
+    private RequestUsername u;
 
-    public HangarScreen(final float width, final float height, final MainClass game, AdsController adsController, AssetManager manager, PostHiScore p, RequestHiScore r) {
+    public HangarScreen(final float width, final float height, final MainClass game, AdsController adsController, AssetManager manager, PostHiScore p, RequestHiScore r, RequestUsername u) {
         this.manager = manager;
         this.width = width;
         this.height = height;
         this.game = game;
         this.p = p;
         this.r = r;
+        this.u = u;
         this.adsController = adsController;
         if(adsController.isInternetConnected()) {adsController.showBannerAd();}
         cam = new OrthographicCamera();
@@ -152,7 +155,7 @@ public class HangarScreen implements Screen {
     public Rectangle getShipRect() { return hangarShips[nship].getBoundingRectangle(); }
 
     public void setScreen() {
-        game.setScreen(new Menu(width, height, game, adsController, manager,p ,r));
+        game.setScreen(new Menu(width, height, game, adsController, manager,p ,r,u));
     }
 
     public void moveLeft() {

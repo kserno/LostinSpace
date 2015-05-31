@@ -16,11 +16,13 @@ public class MainClass extends Game{
     private AssetManager manager;
     private PostHiScore p;
     private RequestHiScore r;
+    private RequestUsername u;
 
-    public MainClass(AdsController adsController, PostHiScore p, RequestHiScore r ){
+    public MainClass(AdsController adsController, PostHiScore p, RequestHiScore r, RequestUsername u ){
         this.adsController = adsController;
         this.p = p;
         this.r = r;
+        this.u = u;
         UserScore[] userScores = r.getUserScores();
         //for (int i=0; i < userScores.length; i++) {
             //Gdx.app.log("Score", String.valueOf(userScores[i].getScore()));
@@ -40,7 +42,7 @@ public class MainClass extends Game{
         AssetLoader.load(width, height);
         Gdx.input.setCatchBackKey(true);
         if(adsController.isInternetConnected()) adsController.loadAd();
-        setScreen(new Menu(width, height, this, adsController, manager, p,r));
+        setScreen(new Menu(width, height, this, adsController, manager, p,r,u));
 
     }
 
