@@ -64,7 +64,6 @@ public class requestHiScore extends AsyncTask<String, String, UserScore[]> {
                 JSONArray jsonArray = jsonObject.names();
                 u = new UserScore[jsonArray.length()];
                 for (int i=0; i< jsonArray.length(); i++) {
-                    System.out.println(jsonArray.getString(i)+ jsonObject.getString(jsonArray.getString(i)));
                     u[i] = new UserScore(jsonArray.getString(i), Integer.valueOf(jsonObject.getString(jsonArray.getString(i))));
                 }
             }

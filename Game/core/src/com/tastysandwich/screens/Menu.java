@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.tastysandwich.game.AdsController;
@@ -45,13 +47,15 @@ public class Menu implements Screen {
     private ImageButton Dragging, Clicking;
     private ImageButton LeaderBoards;
     private ImageButton LeaderBoardsBackground;
-    private ImageButton ChangeName;
+
+    private ImageButton SetName;
+    private TextField NameTextField;
 
     private boolean playSounds;
 
-    private SpriteDrawable imgbPlay,imgbHangar, imgbSoundsT, imgbSoundsF, imgbClick, imgbDrag, imgbLeaderBoards, imgbLeaderBoardsBackground, imgbChangeName;
+    private SpriteDrawable imgbPlay, imgbHangar, imgbSoundsT, imgbSoundsF, imgbClick, imgbDrag, imgbLeaderBoards, imgbLeaderBoardsBackground, imgbTextField, imgbSetName;
 
-    private Sprite menuBackground;
+    private Sprite menuBackground, menuShip;
 
     private String score;
     private float scoreWidth, scoreHeight;
@@ -72,13 +76,17 @@ public class Menu implements Screen {
 
     private int loadingLB;
 
-    private BitmapFont font;
+    private BitmapFont font, fontSmall, fontSmallest;
 
     private UserScore[] userScores;
+
+    private String nameMessage;
+    private float nameMessageVisible;
+
     public Menu(final float width, final float height, final MainClass game, final AdsController adsController, final AssetManager manager, final PostHiScore p, final RequestHiScore r, final RequestUsername u) {
         this.manager = manager;
-        this.r=r;
-        this.p=p;
+        this.r = r;
+        this.p = p;
         this.u = u;
         this.width = width;
         this.height = height;
@@ -92,11 +100,18 @@ public class Menu implements Screen {
         loadingLB = 0;
 
         font = AssetLoader.font;
+        fontSmall = AssetLoader.fontSmall;
+        fontSmallest = AssetLoader.fontSmallest;
+
+        fontSmallest.setColor(Color.BLACK);
+
+        nameMessage = "";
+        nameMessageVisible = 0;
 
         playSounds = AssetLoader.getSounds();
         music = manager.get("data/audio/background_music.mp3", Music.class);
         music.setLooping(true);
-        if(playSounds){
+        if (playSounds) {
             music.play();
         }
 
@@ -113,6 +128,8 @@ public class Menu implements Screen {
         stage.clear();
 
         menuBackground = AssetLoader.sMenuBackground;
+        menuShip = AssetLoader.shipMenu;
+
         imgbLeaderBoardsBackground = AssetLoader.sdLeaderBoardsBackground;
         imgbPlay = AssetLoader.sdPlay;
         imgbHangar = AssetLoader.sdHangar;
@@ -121,136 +138,151 @@ public class Menu implements Screen {
         imgbClick = AssetLoader.sdClick;
         imgbDrag = AssetLoader.sdDrag;
         imgbLeaderBoards = AssetLoader.sdLeaderBoards;
-        imgbChangeName = AssetLoader.sdChangeName;
+
+        imgbSetName = AssetLoader.sdSetName;
+        imgbTextField = AssetLoader.sdTextField;
+
+        NameTextField = new TextField("", new TextField.TextFieldStyle(fontSmall, Color.BLACK, imgbClick, imgbTextField, imgbTextField));
+        NameTextField.setPosition(width / 9 + width / 40, height / 4 + height / 20);
+        NameTextField.setSize(width / 5 + width / 30, height / 6);
+        NameTextField.setAlignment(Align.center);
+        String text;
+        if (AssetLoader.getName()) {
+            text = AssetLoader.getUserName();
+        } else {
+            text = "Choose a name";
+        }
+        NameTextField.setText(text);
+        NameTextField.setMaxLength(10);
+        NameTextField.setTextFieldListener(new TextField.TextFieldListener() {
+            public void keyTyped(TextField textField, char key) {
+                if (key == '\n') textField.getOnscreenKeyboard().show(true);
+            }
+        });
+
+        SetName = new ImageButton(imgbSetName);
+        SetName.setPosition(width / 5 + width / 40, height / 3 + height / 6);
+        SetName.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                changeName(NameTextField.getText());
+                nameMessageVisible = 3;
+                return true;
+            }
+        });
 
         Clicking = new ImageButton(imgbClick);
         Clicking.setPosition(width / 2 - width / 16 * 5, height / 24 * 7);
         Clicking.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, true, p, r,u));
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, true, p, r, u));
                 return true;
-            }});
+            }
+        });
         Dragging = new ImageButton(imgbDrag);
         Dragging.setPosition(width / 2, height / 24 * 7);
         Dragging.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, false, p, r,u));
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new GameScreen(width, height, adsController, game, manager, music, false, p, r, u));
                 return true;
-            }});
+            }
+        });
 
         Play = new ImageButton(imgbPlay);
         Play.setPosition(width / 2 - width / 16 * 5 / 2, height / 6);
         Play.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                play=true;
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                play = true;
                 table.removeActor(Play);
                 table.removeActor(Hangar);
                 table.removeActor(LeaderBoards);
+                table.removeActor(NameTextField);
+                table.removeActor(SetName);
                 table.add(Clicking, Dragging);
-                return true;
-            }});
-
-        Hangar = new ImageButton(imgbHangar);
-        Hangar.setPosition(width / 2 - width / 16 * 5 / 2,height / 6 * 2);
-        Hangar.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new HangarScreen(width,height, game, adsController, manager, p, r,u));
                 return true;
             }
         });
-        ChangeName = new ImageButton(imgbChangeName);
-        ChangeName.setPosition(width / 6 / 2,height / 6);
-        ChangeName.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                changeName(AssetLoader.getUserName());
+
+        Hangar = new ImageButton(imgbHangar);
+        Hangar.setPosition(width / 2 - width / 16 * 5 / 2, height / 6 * 2);
+        Hangar.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new HangarScreen(width, height, game, adsController, manager, p, r, u));
                 return true;
             }
         });
         LeaderBoards = new ImageButton(imgbLeaderBoards);
         LeaderBoards.setPosition(width / 2 - width / 16 * 5 / 2, height / 6 * 3);
         LeaderBoards.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 loadingLB = 1;
                 table.removeActor(Play);
                 table.removeActor(Hangar);
                 table.removeActor(LeaderBoards);
-                table.removeActor(ChangeName);
+                table.removeActor(NameTextField);
+                table.removeActor(SetName);
                 table.add(LeaderBoardsBackground);
                 return true;
-            }});
+            }
+        });
         LeaderBoardsBackground = new ImageButton(imgbLeaderBoardsBackground);
         LeaderBoardsBackground.setPosition(0, 0);
         LeaderBoardsBackground.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 leaderBoards = false;
                 loadingLB = 0;
                 table.removeActor(LeaderBoardsBackground);
-                table.add(Play, Hangar, LeaderBoards, ChangeName);
+                table.add(Play, Hangar, LeaderBoards, NameTextField, SetName);
                 return true;
-            }});
-        if(playSounds){
+            }
+        });
+        if (playSounds) {
             Sounds = new ImageButton(imgbSoundsT);
-        }else {
+        } else {
             Sounds = new ImageButton(imgbSoundsF);
         }
         Sounds.setPosition(width - width / 11, width / 11 - width / 14);
         Sounds.addListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if(playSounds) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (playSounds) {
                     playSounds = false;
                     AssetLoader.setSounds(playSounds);
                     music.stop();
                     Sounds.setStyle(new ImageButton.ImageButtonStyle(imgbSoundsF, imgbSoundsF, imgbSoundsF, imgbSoundsF, imgbSoundsF, imgbSoundsF));
-                }else {
+                } else {
                     playSounds = true;
                     AssetLoader.setSounds(playSounds);
                     music.play();
                     Sounds.setStyle(new ImageButton.ImageButtonStyle(imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT, imgbSoundsT));
                 }
                 return true;
-            }});
+            }
+        });
         stage.addActor(table);
-        table.add(Play, Hangar, LeaderBoards, ChangeName, Sounds);
+        table.add(Play, Hangar, LeaderBoards, Sounds, NameTextField, SetName);
+    }
 
-        if(!AssetLoader.getName()){
-            changeName("");
+
+    public void changeName(String text) {
+        if (!AssetLoader.getName()) {
+            if (u.requestUsername(text)) {
+                AssetLoader.setUserName(text);
+                nameMessage = "Name set!";
+            } else {
+                nameMessage = "Name already taken";
+            }
+        } else {
+            if (u.requestUsername(text, AssetLoader.getUserName())) {
+                AssetLoader.setUserName(text);
+                nameMessage = "Name changed!";
+            } else {
+                nameMessage = "Name already taken";
+            }
         }
     }
 
-    private void changeName(String name) {
-        Input.TextInputListener listener = new Input.TextInputListener() {
-            @Override
-            public void input(String text) {
-                if (!AssetLoader.getName()) {
-                    if (u.requestUsername(text)) {
-                        AssetLoader.setUserName(text);
-                        System.out.println("username setted");
-                    } else {
-                        System.out.println("name already chosen");
-                    }
-                } else {
-                    if (u.requestUsername(text, AssetLoader.getUserName())) {
-                        AssetLoader.setUserName(text);
-                        System.out.println("username setted last one deleted");
-                    } else {
-                        System.out.println("name already chosen");
-                    }
-                }
-            }
-
-            @Override
-            public void canceled() {
-
-            }
-        };
-        Gdx.input.getTextInput(listener, "Enter your name", name, "");
-    }
-    
 
     @Override
-    public void  show() {
-
-
+    public void show() {
 
 
     }
@@ -263,15 +295,21 @@ public class Menu implements Screen {
         menuBackground.draw(batcher);
         batcher.enableBlending();
         Sounds.draw(batcher, 50f);
-        font.draw(batcher,score , width/2 - scoreWidth/2, height/20 * 15);
-        if(play) {
+        font.draw(batcher, score, width / 2 - scoreWidth / 2, height / 20 * 15);
+        if (play) {
             Clicking.draw(batcher, 50f);
             Dragging.draw(batcher, 50f);
-        }else {
+        } else {
             Play.draw(batcher, 50f);
             Hangar.draw(batcher, 50f);
             LeaderBoards.draw(batcher, 50f);
-            ChangeName.draw(batcher, 50f);
+            NameTextField.draw(batcher, 50f);
+            menuShip.draw(batcher);
+            SetName.draw(batcher, 50f);
+            if (nameMessageVisible > 0) {
+                fontSmallest.draw(batcher, nameMessage, width / 4 + width / 20 - fontSmall.getBounds(nameMessage).width / 2, height / 3 + height / 8);
+                nameMessageVisible -= delta;
+            }
             if (loadingLB != 0) {
                 switch (loadingLB) {
                     case 1: {
@@ -292,12 +330,13 @@ public class Menu implements Screen {
                 LeaderBoardsBackground.draw(batcher, 50f);
                 if (userScores != null) {
                     for (int i = 0; i < userScores.length; i++) {
-                        font.draw(batcher, (i + 1) + ".", width / 8, (height - height / 5) / 10 * (i+1));
-                        font.draw(batcher, "" + userScores[i].getScore(), width / 8 * 2, (height - height / 5) / 10 * (i+1));
-                        font.draw(batcher, userScores[i].getUser(), width / 8 * 4, (height - height / 5) / 10 * (i+1));
+                        fontSmall.setColor(Color.WHITE);
+                        fontSmall.draw(batcher, (i + 1) + ".", width / 8, (height - height / 10 * 3) / 10 * (i + 2));
+                        fontSmall.draw(batcher, "" + userScores[i].getScore(), width / 8 * 2, (height - height / 10 * 3) / 10 * (i + 2));
+                        fontSmall.draw(batcher, userScores[i].getUser(), width / 8 * 4, (height - height / 10 * 3) / 10 * (i + 2));
                     }
                 } else {
-                    font.draw(batcher, "Sorry, aber du hast keine Internet", 0, height / 2);
+                    font.draw(batcher, "No internet connection", width / 2 - font.getBounds("No internet connection").width / 2, height / 2);
                 }
             }
         }

@@ -61,9 +61,11 @@ public class requestUsername extends AsyncTask<String, String, Boolean> {
         try {
             JSONObject json = new JSONObject(sJSON);
             if (json.getString("Result").equals("Success")) {
+                System.out.println("true");
                 b=true;
             }
             if (json.getString("Result").equals("Failed")) {
+                System.out.println("false");
                 b=false;
             }
         } catch (JSONException e){

@@ -25,7 +25,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        pstHiScore p = new pstHiScore();
+        pstHiScore p = new pstHiScore(this);
         reqHiScore r = new reqHiScore(this);
         reqUsername u = new reqUsername(this);
         View gameView = initializeForView(new MainClass(this,p ,r,u), config);

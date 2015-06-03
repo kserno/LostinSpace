@@ -32,7 +32,7 @@ public class AssetLoader {
 
     private static Preferences prefs;
 
-    public static BitmapFont font;
+    public static BitmapFont font, fontSmall, fontSmallest;
 
     public static Sprite[] energyBar;
 
@@ -43,9 +43,9 @@ public class AssetLoader {
     public static Sprite sSoundsF, sSoundsT;
 
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
-    public static Sprite sMenuBackground, hangarBackground;
+    public static Sprite sMenuBackground, hangarBackground, shipMenu;
 
-    public static SpriteDrawable sdPlay,sdHangar, sdSoundsT, sdSoundsF, sdClick, sdDrag, sdLeaderBoards, sdLeaderBoardsBackground, sdChangeName;
+    public static SpriteDrawable sdPlay,sdHangar, sdSoundsT, sdSoundsF, sdClick, sdDrag, sdLeaderBoards, sdLeaderBoardsBackground, sdTextField, sdSetName;
 
 
 
@@ -84,12 +84,16 @@ public class AssetLoader {
         FileHandle exoFile = Gdx.files.internal("data/font/Raleway-SemiBold.ttf");
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(exoFile);
         font = generator.generateFont((width/18));
+        fontSmall = generator.generateFont((width/25));
+        fontSmallest = generator.generateFont((width/30));
         generator.dispose();
         font.setScale(1f, -1f);
+        fontSmall.setScale(1f, -1f);
+        fontSmallest.setScale(1f, -1f);
     }
 
     private static void loadBackgrounds(int width, int height) {
-        Texture texture = new Texture(Gdx.files.internal("data/loadingscreenhighscore.jpg"));
+        Texture texture = new Texture(Gdx.files.internal("data/menuBG.jpg"));
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         sMenuBackground = new Sprite(texture);
         sMenuBackground.setSize(width, height);
@@ -146,11 +150,23 @@ public class AssetLoader {
         sprite.flip(false,true);
         sdLeaderBoardsBackground = new SpriteDrawable(sprite);
 
-        texture = new Texture("data/skins/name.png");
+        texture = new Texture("data/name/name.png");
         sprite = new Sprite(texture);
-        sprite.setSize(width / 6, height / 3);
+        sprite.setSize(width/2, height / 6);
         sprite.flip(false,true);
-        sdChangeName = new SpriteDrawable(sprite);
+        sdTextField = new SpriteDrawable(sprite);
+
+        texture = new Texture("data/name/settext.png");
+        sprite = new Sprite(texture);
+        sprite.setSize(width / 22, height / 16);
+        sprite.flip(false,true);
+        sdSetName = new SpriteDrawable(sprite);
+
+        texture = new Texture("data/name/ship.png");
+        shipMenu = new Sprite(texture);
+        shipMenu.setSize(width/4, height / 2);
+        shipMenu.setPosition(width / 26, - height / 9);
+        shipMenu.flip(false,true);
 
 
         //BUTTON SOUNDS TRUE
