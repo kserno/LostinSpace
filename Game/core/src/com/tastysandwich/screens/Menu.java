@@ -53,7 +53,7 @@ public class Menu implements Screen {
 
     private boolean playSounds;
 
-    private SpriteDrawable imgbPlay, imgbHangar, imgbSoundsT, imgbSoundsF, imgbClick, imgbDrag, imgbLeaderBoards, imgbLeaderBoardsBackground, imgbTextField, imgbSetName;
+    private SpriteDrawable imgbPlay, imgbHangar, imgbSoundsT, imgbSoundsF, imgbClick, imgbDrag, imgbLeaderBoards, imgbLeaderBoardsBackground, imgbTextField, imgbSetName, imgbCursor;
 
     private Sprite menuBackground, menuShip;
 
@@ -139,12 +139,13 @@ public class Menu implements Screen {
         imgbDrag = AssetLoader.sdDrag;
         imgbLeaderBoards = AssetLoader.sdLeaderBoards;
 
+        imgbCursor = AssetLoader.sdCursor;
         imgbSetName = AssetLoader.sdSetName;
         imgbTextField = AssetLoader.sdTextField;
 
-        NameTextField = new TextField("", new TextField.TextFieldStyle(fontSmall, Color.BLACK, imgbClick, imgbTextField, imgbTextField));
-        NameTextField.setPosition(width / 9 + width / 40, height / 4 + height / 20);
-        NameTextField.setSize(width / 5 + width / 30, height / 6);
+        NameTextField = new TextField("", new TextField.TextFieldStyle(fontSmallest, Color.BLACK, imgbCursor, imgbTextField, imgbTextField));
+        NameTextField.setPosition(width / 10, height / 3);
+        NameTextField.setSize(width / 5, height / 9);
         NameTextField.setAlignment(Align.center);
         String text;
         if (AssetLoader.getName()) {
@@ -161,7 +162,7 @@ public class Menu implements Screen {
         });
 
         SetName = new ImageButton(imgbSetName);
-        SetName.setPosition(width / 5 + width / 40, height / 3 + height / 6);
+        SetName.setPosition(width / 6 + width / 70 , height / 3 + height / 9);
         SetName.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 changeName(NameTextField.getText());
@@ -307,7 +308,7 @@ public class Menu implements Screen {
             menuShip.draw(batcher);
             SetName.draw(batcher, 50f);
             if (nameMessageVisible > 0) {
-                fontSmallest.draw(batcher, nameMessage, width / 4 + width / 20 - fontSmall.getBounds(nameMessage).width / 2, height / 3 + height / 8);
+                fontSmallest.draw(batcher, nameMessage, width / 4 - fontSmall.getBounds(nameMessage).width / 2, height / 3 + height / 6);
                 nameMessageVisible -= delta;
             }
             if (loadingLB != 0) {

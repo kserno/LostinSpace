@@ -45,7 +45,7 @@ public class AssetLoader {
     /////////////////////////////////////MENU ASSETS////////////////////////////////////////////
     public static Sprite sMenuBackground, hangarBackground, shipMenu;
 
-    public static SpriteDrawable sdPlay,sdHangar, sdSoundsT, sdSoundsF, sdClick, sdDrag, sdLeaderBoards, sdLeaderBoardsBackground, sdTextField, sdSetName;
+    public static SpriteDrawable sdPlay,sdHangar, sdSoundsT, sdSoundsF, sdClick, sdDrag, sdLeaderBoards, sdLeaderBoardsBackground, sdTextField, sdSetName, sdCursor;
 
 
 
@@ -158,14 +158,19 @@ public class AssetLoader {
 
         texture = new Texture("data/name/settext.png");
         sprite = new Sprite(texture);
-        sprite.setSize(width / 22, height / 16);
+        sprite.setSize(width / 23, height / 25);
         sprite.flip(false,true);
         sdSetName = new SpriteDrawable(sprite);
 
+        texture = new Texture("data/name/cursor.png");
+        sprite = new Sprite(texture);
+        sprite.flip(false,true);
+        sdCursor = new SpriteDrawable(sprite);
+
         texture = new Texture("data/name/ship.png");
         shipMenu = new Sprite(texture);
-        shipMenu.setSize(width/4, height / 2);
-        shipMenu.setPosition(width / 26, - height / 9);
+        shipMenu.setSize(width/6 + width/ 40, height / 3);
+        shipMenu.setPosition(width / 34, height / 15);
         shipMenu.flip(false,true);
 
 
