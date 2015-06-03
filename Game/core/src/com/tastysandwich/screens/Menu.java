@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -48,12 +49,13 @@ public class Menu implements Screen {
     private ImageButton LeaderBoards;
     private ImageButton LeaderBoardsBackground;
 
-    private ImageButton SetName;
+    //private ImageButton SetName;
     private TextField NameTextField;
+    private TextButton SetName;
 
     private boolean playSounds;
 
-    private SpriteDrawable imgbPlay, imgbHangar, imgbSoundsT, imgbSoundsF, imgbClick, imgbDrag, imgbLeaderBoards, imgbLeaderBoardsBackground, imgbTextField, imgbSetName, imgbCursor;
+    private SpriteDrawable imgbPlay, imgbHangar, imgbSoundsT, imgbSoundsF, imgbClick, imgbDrag, imgbLeaderBoards, imgbLeaderBoardsBackground, imgbTextField, imgbCursor;
 
     private Sprite menuBackground, menuShip;
 
@@ -140,7 +142,6 @@ public class Menu implements Screen {
         imgbLeaderBoards = AssetLoader.sdLeaderBoards;
 
         imgbCursor = AssetLoader.sdCursor;
-        imgbSetName = AssetLoader.sdSetName;
         imgbTextField = AssetLoader.sdTextField;
 
         NameTextField = new TextField("", new TextField.TextFieldStyle(fontSmallest, Color.BLACK, imgbCursor, imgbTextField, imgbTextField));
@@ -161,12 +162,15 @@ public class Menu implements Screen {
             }
         });
 
-        SetName = new ImageButton(imgbSetName);
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        style.font = fontSmallest;
+        style.fontColor = Color.BLACK;
+        SetName = new TextButton("Set", style);
         SetName.setPosition(width / 6 + width / 70 , height / 3 + height / 9);
+        SetName.setSize(width / 23, height / 25);
         SetName.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                changeName(NameTextField.getText());
-                nameMessageVisible = 3;
+                nameMessageVisible = 5;
                 return true;
             }
         });
@@ -307,9 +311,15 @@ public class Menu implements Screen {
             NameTextField.draw(batcher, 50f);
             menuShip.draw(batcher);
             SetName.draw(batcher, 50f);
-            if (nameMessageVisible > 0) {
+            if (nameMessageVisible > 0 && nameMessageVisible < 4) {
                 fontSmallest.draw(batcher, nameMessage, width / 4 - fontSmall.getBounds(nameMessage).width / 2, height / 3 + height / 6);
                 nameMessageVisible -= delta;
+            }else if(nameMessageVisible == 5) {
+                font.draw(batcher, "LOADING", width / 2 - font.getBounds("LOADING").width / 2, height / 2 + font.getBounds("LOADING").height / 2);
+                nameMessageVisible = 4;
+            }else if(nameMessageVisible == 4) {
+                changeName(NameTextField.getText());
+                nameMessageVisible = 3;
             }
             if (loadingLB != 0) {
                 switch (loadingLB) {
