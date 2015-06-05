@@ -100,7 +100,7 @@ public class GameWorld {
         pauseButton = new Rectangle(width - width / 10, height/20, width/10, height/10 + height/20);
         tryAgainRect = new Rectangle(width / 3*2 -width/5/2 , height / 2, width / 5, height / 20 * 3);
         menuRect = new Rectangle(width / 3 - width/5/2, height/2, width/5, height/20*3);
-        soundsRect = new Rectangle(width - width/11, AssetLoader.sSoundsF.getWidth() ,width/11 - width/14, AssetLoader.sSoundsF.getHeight());
+        soundsRect = new Rectangle(width - width/11, width/11 - width / 20, AssetLoader.sSoundsF.getWidth() , AssetLoader.sSoundsF.getHeight());
         musicPlay = AssetLoader.getSounds();
 
     }

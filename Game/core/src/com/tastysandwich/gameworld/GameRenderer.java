@@ -99,8 +99,8 @@ public class GameRenderer {
         shieldOn = AssetLoader.shieldOn;
         soundsF = AssetLoader.sSoundsF;
         soundsT = AssetLoader.sSoundsT;
-        soundsF.setPosition(width - width/11, width/11 -width/14);
-        soundsT.setPosition(width - width/11, width/11 -width/14);
+        soundsF.setPosition(width - width/11, width/11 - width / 20);
+        soundsT.setPosition(width - width/11, width/11 - width / 20);
     }
     private void initGameObjects() {
         ship = myWorld.getShip();

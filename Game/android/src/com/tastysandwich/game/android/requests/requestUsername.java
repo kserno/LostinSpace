@@ -27,10 +27,9 @@ public class requestUsername extends AsyncTask<String, String, Boolean> {
     @Override
     protected Boolean doInBackground(String... params) {
         String str="";
-        if (params[1]==null) {
+        if (params.length <= 1) {
             str = cUrl + "&username="+params[0];
-        }
-        if (params[1]!=null) {
+        }else if (params[1]!=null) {
             str = cUrl + "&username=" + params[0] + "&lun="+params[1];
         }
         try {

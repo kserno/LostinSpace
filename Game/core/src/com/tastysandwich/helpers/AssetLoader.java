@@ -2,8 +2,6 @@ package com.tastysandwich.helpers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -404,5 +402,7 @@ public class AssetLoader {
 
     public static void dispose() {
         font.dispose();
+        fontSmall.dispose();
+        fontSmallest.dispose();
     }
 }

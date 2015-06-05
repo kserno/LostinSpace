@@ -54,7 +54,17 @@ public class InputHandler implements InputProcessor {
             world.start();
         }
         if (world.getCurrentState() == GameWorld.GameState.PAUSE) {
-            world.resume();
+            if(world.getSoundsRect().contains(screenX,screenY)) {
+                if (world.getMusicPlay()) {
+                    world.turnOffMusic();
+                    AssetLoader.setSounds(false);
+                } else {
+                    world.turnOnMusic();
+                    AssetLoader.setSounds(true);
+                }
+            }else {
+                world.resume();
+            }
         }
         if (world.getCurrentState() == GameWorld.GameState.GAMEOVER || world.getCurrentState() == GameWorld.GameState.HISCORE) {
             if(world.getTryAgainRect().contains(screenX, screenY)){
@@ -72,17 +82,6 @@ public class InputHandler implements InputProcessor {
         if (world.getCurrentState() == GameWorld.GameState.RUNNING && clicking) {
             ship.onClick(screenX, screenY);
         }
-        if (world.getCurrentState() == GameWorld.GameState.PAUSE && world.getSoundsRect().contains(screenX,screenY)) {
-            if (world.getMusicPlay()) {
-                world.turnOffMusic();
-                AssetLoader.setSounds(false);
-            } else {
-                world.turnOnMusic();
-                AssetLoader.setSounds(true);
-            }
-        }
-
-
         return false;
     }
 
