@@ -176,7 +176,7 @@ public class GameWorld {
             asteroids[i].update(delta);
         }
         restartAsteroid += delta;
-        if (restartAsteroid > 0.5) {
+        if (restartAsteroid > 0.4) {
             for (int i = 0; i <= nAsteroids; i++) {
                 if (asteroids[i].readyToRestart) {
                     asteroids[i].restart();
@@ -190,7 +190,7 @@ public class GameWorld {
         if (gameSpeed < 3) {
             gameSpeed += delta / 64;
         }
-        if (spawnAsteroid > 6 && nAsteroids < 8) {
+        if (spawnAsteroid > 5 && nAsteroids < 8) {
             asteroids[nAsteroids + 1] = new Asteroid(width, (float) random.nextInt((int) height), random.nextInt(200) - 100, this);
             nAsteroids++;
             spawnAsteroid = 0;

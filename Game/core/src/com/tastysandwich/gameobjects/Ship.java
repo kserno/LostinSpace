@@ -19,7 +19,7 @@ public class Ship {
     private float prepona;
 
     private float currentRotation, destinedRotation, rotatePerFrame;
-    private static float rotationSpeed = 50;
+    private static float rotationSpeed = 80;
     private float height,width;
     private int goToY,goToX;
 
@@ -47,6 +47,7 @@ public class Ship {
 
     private Random random;
 
+    private float maxY, minY;
 
     public Ship(float x, float y, float width, float height, GameWorld world, float screenHeight, boolean clicking){
         position = new Vector2(x, y);
@@ -72,6 +73,9 @@ public class Ship {
         goTop = false;
         stopped = true;
         random = new Random();
+
+        minY = -height / 2;
+        maxY = world.height - height / 2;
     }
     public void update(float delta){
         originX = (position.x + width / 2);
@@ -79,22 +83,29 @@ public class Ship {
 
         if(clicking) {
             position.add(velocity.cpy().scl(delta));
-            if(position.y > 0 - offset && position.y < 0 + offset && world.currentState != GameWorld.GameState.DYING ) {
-                velocity.y = 0;
-                destinedRotation = 0;
-                position.y = offset;
-                stopped = true;
-            }else if (position.y < world.height - height + offset && position.y > world.height - height - offset && world.currentState != GameWorld.GameState.DYING ){
-                velocity.y = 0;
-                destinedRotation = 0;
-                position.y = world.height - height - offset;
-                stopped = true;
+            if(world.currentState != GameWorld.GameState.DYING) {
+                if (position.y > minY - offset && position.y < minY + offset) {
+                    velocity.y = 0;
+                    destinedRotation = 0;
+                    position.y = minY + offset;
+                    stopped = true;
+                } else if (position.y < maxY + offset && position.y > maxY - offset) {
+                    velocity.y = 0;
+                    destinedRotation = 0;
+                    position.y = maxY - offset;
+                    stopped = true;
+                } else if (position.y < minY - offset) {
+                    position.y = minY + offset;
+                } else if (position.y > maxY + offset) {
+                    position.y = maxY - offset;
+                }
+
             }
             if(goTop && !stopped) {
-                velocity.y = (-speed + currentRotation * 2) * world.getGameSpeed();
+                velocity.y = (-speed + currentRotation) * world.getGameSpeed();
                 destinedRotation = -20;
             }else if(!stopped) {
-                velocity.y = (speed + currentRotation * 2) * world.getGameSpeed();
+                velocity.y = (speed + currentRotation) * world.getGameSpeed();
                 destinedRotation = 20;
             }
 
@@ -109,9 +120,9 @@ public class Ship {
                 if (originY > goToY - offset && originY < goToY + offset) {
                     velocity.y = 0;
                 } else if (originY > goToY) {
-                    velocity.y = (-speed + currentRotation * 2) * world.getGameSpeed();
+                    velocity.y = (-speed + currentRotation) * world.getGameSpeed();
                 } else if (originY < goToY) {
-                    velocity.y = (speed + currentRotation * 2) * world.getGameSpeed();
+                    velocity.y = (speed + currentRotation) * world.getGameSpeed();
                 }
             }
             if (world.currentState != GameWorld.GameState.DYING) {

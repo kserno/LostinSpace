@@ -1,6 +1,7 @@
 package com.tastysandwich.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -48,13 +50,11 @@ public class Menu implements Screen {
     private ImageButton LeaderBoards;
     private ImageButton LeaderBoardsBackground;
 
-    //private ImageButton SetName;
-    private TextField NameTextField;
-    private TextButton SetName;
+    private ImageButton TextField;
 
     private boolean playSounds;
 
-    private SpriteDrawable imgbPlay, imgbHangar, imgbSoundsT, imgbSoundsF, imgbClick, imgbDrag, imgbLeaderBoards, imgbLeaderBoardsBackground, imgbTextField, imgbCursor;
+    private SpriteDrawable imgbPlay, imgbHangar, imgbSoundsT, imgbSoundsF, imgbClick, imgbDrag, imgbLeaderBoards, imgbLeaderBoardsBackground, imgbTextField;
 
     private Sprite menuBackground, menuShip;
 
@@ -81,7 +81,7 @@ public class Menu implements Screen {
 
     private UserScore[] userScores;
 
-    private String nameMessage;
+    private String nameMessage, newName;
     private float nameMessageVisible;
 
     public Menu(final float width, final float height, final MainClass game, final AdsController adsController, final AssetManager manager, final PostHiScore p, final RequestHiScore r, final RequestUsername u) {
@@ -108,6 +108,7 @@ public class Menu implements Screen {
 
         nameMessage = "";
         nameMessageVisible = 0;
+        newName = AssetLoader.getUserName();
 
         playSounds = AssetLoader.getSounds();
         music = manager.get("data/audio/background_music.mp3", Music.class);
@@ -139,37 +140,15 @@ public class Menu implements Screen {
         imgbClick = AssetLoader.sdClick;
         imgbDrag = AssetLoader.sdDrag;
         imgbLeaderBoards = AssetLoader.sdLeaderBoards;
-
-        imgbCursor = AssetLoader.sdCursor;
         imgbTextField = AssetLoader.sdTextField;
 
-        NameTextField = new TextField("", new TextField.TextFieldStyle(fontSmallest, Color.BLACK, imgbCursor, imgbTextField, imgbTextField));
-        NameTextField.setPosition(width / 10, height / 3);
-        NameTextField.setSize(width / 5, height / 9);
-        NameTextField.setAlignment(Align.center);
-        String text;
-        if (AssetLoader.getName()) {
-            text = AssetLoader.getUserName();
-        } else {
-            text = "Choose a name";
-        }
-        NameTextField.setText(text);
-        NameTextField.setMaxLength(10);
-        NameTextField.setTextFieldListener(new TextField.TextFieldListener() {
-            public void keyTyped(TextField textField, char key) {
-                if (key == '\n') textField.getOnscreenKeyboard().show(true);
-            }
-        });
 
-        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-        style.font = fontSmallest;
-        style.fontColor = Color.BLACK;
-        SetName = new TextButton("Set", style);
-        SetName.setPosition(width / 6 + width / 70 , height / 3 + height / 9);
-        SetName.setSize(width / 23, height / 25);
-        SetName.addListener(new InputListener() {
+        TextField = new ImageButton(imgbTextField);
+        TextField.setPosition(width / 10 ,height / 2 - height / 7);
+        TextField.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                nameMessageVisible = 5;
+                MyTextInputListener listener = new MyTextInputListener();
+                Gdx.input.getTextInput(listener, "Choose a name", AssetLoader.getUserName(), "");
                 return true;
             }
         });
@@ -199,8 +178,7 @@ public class Menu implements Screen {
                 table.removeActor(Play);
                 table.removeActor(Hangar);
                 table.removeActor(LeaderBoards);
-                table.removeActor(NameTextField);
-                table.removeActor(SetName);
+                table.removeActor(TextField);
                 table.add(Clicking, Dragging);
                 return true;
             }
@@ -222,8 +200,7 @@ public class Menu implements Screen {
                 table.removeActor(Play);
                 table.removeActor(Hangar);
                 table.removeActor(LeaderBoards);
-                table.removeActor(NameTextField);
-                table.removeActor(SetName);
+                table.removeActor(TextField);
                 table.add(LeaderBoardsBackground);
                 return true;
             }
@@ -235,7 +212,7 @@ public class Menu implements Screen {
                 leaderBoards = false;
                 loadingLB = 0;
                 table.removeActor(LeaderBoardsBackground);
-                table.add(Play, Hangar, LeaderBoards, NameTextField, SetName);
+                table.add(Play, Hangar, LeaderBoards, TextField);
                 return true;
             }
         });
@@ -262,7 +239,25 @@ public class Menu implements Screen {
             }
         });
         stage.addActor(table);
-        table.add(Play, Hangar, LeaderBoards, Sounds, NameTextField, SetName);
+        table.add(Play, Hangar, LeaderBoards, Sounds, TextField, TextField);
+    }
+
+    public class MyTextInputListener implements Input.TextInputListener {
+        @Override
+        public void input (String text) {
+            int number;
+            if(text.length() < 9) {
+                number = text.length();
+            }else {
+                number = 9;
+            }
+            newName = text.substring(0, number);
+            nameMessageVisible = 5;
+        }
+
+        @Override
+        public void canceled () {
+        }
     }
 
 
@@ -273,6 +268,7 @@ public class Menu implements Screen {
                 nameMessage = "Name set!";
             } else {
                 nameMessage = "Name already taken";
+                newName = AssetLoader.getUserName();
             }
         } else {
             if (u.requestUsername(text, AssetLoader.getUserName())) {
@@ -280,6 +276,7 @@ public class Menu implements Screen {
                 nameMessage = "Name changed!";
             } else {
                 nameMessage = "Name already taken";
+                newName = AssetLoader.getUserName();
             }
         }
     }
@@ -307,18 +304,20 @@ public class Menu implements Screen {
             Play.draw(batcher, 50f);
             Hangar.draw(batcher, 50f);
             LeaderBoards.draw(batcher, 50f);
-            NameTextField.draw(batcher, 50f);
             menuShip.draw(batcher);
-            SetName.draw(batcher, 50f);
+            TextField.draw(batcher, 50f);
+            fontSmall.setColor(Color.BLACK);
+            fontSmall.draw(batcher, newName, width / 8, height / 2 - height / 10);
+            fontSmall.setColor(Color.WHITE);
             if (nameMessageVisible > 0 && nameMessageVisible < 4) {
                 fontSmallest.draw(batcher, nameMessage, width / 4 - fontSmall.getBounds(nameMessage).width / 2, height / 3 + height / 6);
                 nameMessageVisible -= delta;
-            }else if(nameMessageVisible == 5) {
+            }else if (nameMessageVisible == 4) {
+                changeName(newName);
+                nameMessageVisible = 3;
+            }else if (nameMessageVisible == 5) {
                 font.draw(batcher, "LOADING", width / 2 - font.getBounds("LOADING").width / 2, height / 2 + font.getBounds("LOADING").height / 2);
                 nameMessageVisible = 4;
-            }else if(nameMessageVisible == 4) {
-                changeName(NameTextField.getText());
-                nameMessageVisible = 3;
             }
             if (loadingLB != 0) {
                 switch (loadingLB) {
